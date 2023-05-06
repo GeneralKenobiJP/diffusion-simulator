@@ -31,6 +31,7 @@ public class StandardBehaviour : MonoBehaviour
         direction.Set(UnityEngine.Random.Range(1f,10f),UnityEngine.Random.Range(1f,10f),UnityEngine.Random.Range(1f,10f));
         direction.Normalize();
         var relativeVelocity = 0.2f*velocity/(float)mi;
+        //relativeVelocity*=0.1f; //TEMPORARY
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
         Debug.Log(direction);
         Debug.Log(direction.magnitude);
@@ -60,5 +61,32 @@ public class StandardBehaviour : MonoBehaviour
     void FixedUpdate()
     {
 
+    }
+
+    /*private void OnTriggerEnter(Collider col)
+    {
+        if(col.tag=="vessel")
+        {
+
+        }
+    }*/
+
+    private void ReflectVector(Vector3 u,Vector3 v /*Normal of hte surface hit*/)
+    {
+        var angle = 2*Mathf.Acos(Vector3.Dot(u,v)/(u.magnitude*v.magnitude));
+        
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        Debug.Log(col.collider);
+        if(col.collider.name=="Cylinder")
+        {
+            Debug.Log("Normal of the first point: " + col.contacts[0].normal);
+            foreach (var item in col.contacts)
+            {
+                Debug.DrawRay(item.point, item.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
+            }
+        }
     }
 }
