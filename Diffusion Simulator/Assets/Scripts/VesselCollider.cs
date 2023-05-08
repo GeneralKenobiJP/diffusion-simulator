@@ -12,6 +12,7 @@ public class VesselCollider : MonoBehaviour
     private const int PRECISION=64; //how many plane-colliders do we create?
     private GameObject planeCollider;
     private MeshCollider planeMeshCollider;
+    private Rigidbody planeRigid;
 
     private void SetupColliders()
     {
@@ -24,27 +25,65 @@ public class VesselCollider : MonoBehaviour
         var pos = center+h;
         var basicRot=new Vector3(90,90,180);
         var rot=basicRot;
+        var baseScale = new Vector3(0.1f,1,0.1f);
+        // ###
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
         planeCollider.transform.position = pos;
         planeCollider.transform.Rotate(basicRot);
-        //planeCollider.transform.eulerAngles = rot;
         planeCollider.transform.localScale = planeScale;
         planeMeshCollider = planeCollider.AddComponent<MeshCollider>();
+        //planeMeshCollider.convex = true;
+        planeRigid = planeCollider.AddComponent<Rigidbody>();
+        planeRigid.isKinematic = true;
+        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
+        planeRigid.useGravity = false;
+        planeRigid.tag = "Vessel";
+        //Destroy(planeCollider.GetComponent<MeshRenderer>());
+        // ###
         for(var i=2;i<=PRECISION;i++)
         {
             h=ExtendedMath.RotateVector2(h,2*ang);
             pos = center+h;
             rot += new Vector3(0,0,degAng);
-            Debug.Log(rot);
+            //Debug.Log(rot);
             planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
             planeCollider.transform.position = pos;
-            //planeCollider.transform.eulerAngles=rot;
-            //planeCollider.transform.rotation = Quaternion.Euler(rot);
-            //planeCollider.transform.Rotate(basicRot);
             planeCollider.transform.Rotate(rot);
             planeCollider.transform.localScale = planeScale;
             planeMeshCollider = planeCollider.AddComponent<MeshCollider>();
+            //planeMeshCollider.convex = true;
+            planeRigid = planeCollider.AddComponent<Rigidbody>();
+            planeRigid.isKinematic = true;
+            planeRigid.constraints = RigidbodyConstraints.FreezeAll;
+            planeRigid.useGravity = false;
+            //Destroy(planeCollider.GetComponent<MeshRenderer>());
+            planeRigid.tag = "Vessel";
         }
+
+        planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        planeCollider.transform.position = center+new Vector3(0,height/2,0);
+        planeCollider.transform.Rotate(new Vector3(0,0,180));
+        planeCollider.transform.localScale = baseScale;
+        planeMeshCollider = planeCollider.AddComponent<MeshCollider>();
+        //planeMeshCollider.convex = true;
+        planeRigid = planeCollider.AddComponent<Rigidbody>();
+        planeRigid.isKinematic = true;
+        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
+        planeRigid.useGravity = false;
+        planeRigid.tag = "Vessel";
+
+        planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        planeCollider.transform.position = center-new Vector3(0,height/2,0);
+        planeCollider.transform.localScale = baseScale;
+        planeMeshCollider = planeCollider.AddComponent<MeshCollider>();
+        //planeMeshCollider.convex = true;
+        planeRigid = planeCollider.AddComponent<Rigidbody>();
+        planeRigid.isKinematic = true;
+        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
+        planeRigid.useGravity = false;
+        planeRigid.tag = "Vessel";
+        //Destroy(planeCollider.GetComponent<MeshRenderer>());
+
     }
 
     /*private void FlipNormals(MeshCollider MC)
