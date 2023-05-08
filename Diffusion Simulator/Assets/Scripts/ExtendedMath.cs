@@ -19,5 +19,13 @@ public static class ExtendedMath
     {
         return radians*180f/Mathf.PI;
     }
-    
+
+    /*public static Quaternion QuaternionRotation(Quaternion quat, Vector3 rot) //I fucking hate quaternions
+    {
+        quat = Quaternion.AngleAxis(rot.x,Vector3.right);
+        quat = Quaternion.AngleAxis(rot.y,Vector3.up);
+        quat = Quaternion.AngleAxis(rot.z,Vector3.forward);
+
+        return quat;
+    }*/
 }
