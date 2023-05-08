@@ -21,10 +21,11 @@ public static class ExtendedMath
     }
     public static void ReflectVector(ref Vector3 u,Vector3 v /*Normal of hte surface hit*/)
     {
+        Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(0,0,255), 10f);
         u = u-2*Vector3.Dot(u,v)*v/Mathf.Pow(v.magnitude,2);
         //u=new Vector3(0,0,0);
         //u=-u;
-        Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(255,0,0), 1f);
+        Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(255,0,0), 10f);
     }
 
     /*public static Quaternion QuaternionRotation(Quaternion quat, Vector3 rot) //I fucking hate quaternions

@@ -14,6 +14,7 @@ public class StandardBehaviour : MonoBehaviour
     private double sigma; //standard deviation
     private double mi; //mean
     private Rigidbody rigid;
+    private Collider thisCol;
 
     private void SetVelocityStd()
     {
@@ -55,6 +56,7 @@ public class StandardBehaviour : MonoBehaviour
         SetVelocityStd();
         GenerateDirection();
         rigid = this.GetComponent<Rigidbody>();
+        thisCol = this.GetComponent<Collider>();
         rigid.WakeUp();
     }
 
@@ -105,6 +107,7 @@ public class StandardBehaviour : MonoBehaviour
     {
         rigid.Sleep();
         rigid.isKinematic = true;
+        //thisCol.enabled = false;
         Debug.Log(col.collider);
         if(col.collider.tag=="Vessel")
         {
@@ -121,7 +124,7 @@ public class StandardBehaviour : MonoBehaviour
             Debug.Log(direction.x);
             Debug.Log(direction.y);
             Debug.Log(direction.z);
-            ExtendedMath.ReflectVector(ref direction,-col.contacts[0].normal);
+            ExtendedMath.ReflectVector(ref direction,col.contacts[0].normal);
             this.transform.Translate(0.1f*direction);
             Debug.Log(direction);
             Debug.Log(direction.x);
@@ -142,7 +145,7 @@ public class StandardBehaviour : MonoBehaviour
     }
     private void OnCollisionStay(Collision col)
     {
-        this.transform.Translate(0.1f*direction);
+        //this.transform.Translate(0.1f*direction);
         /*Debug.Log(col.collider);
         if(col.collider.name=="Cylinder")
         {
@@ -166,9 +169,10 @@ public class StandardBehaviour : MonoBehaviour
     }
     private void OnCollisionExit()
     {
-        this.transform.Translate(0.2f*direction);
+        //this.transform.Translate(0.2f*direction);
         Debug.Log("Hakuna matata");
         rigid.isKinematic=false;
         rigid.WakeUp();
+        //thisCol.enabled = true;
     }
 }
