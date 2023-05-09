@@ -8,7 +8,7 @@ public class VesselCollider : MonoBehaviour
     private float radius;
     private float height;
     private Vector3 baseCenter;
-    private Vector3 center;
+    private  Vector3 center;
     private const int PRECISION=32; //how many plane-colliders do we create?
     private GameObject planeCollider;
     private MeshCollider planeMeshCollider;

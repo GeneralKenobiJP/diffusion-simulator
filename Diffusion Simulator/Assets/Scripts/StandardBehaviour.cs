@@ -5,7 +5,6 @@ using System;
 
 public class StandardBehaviour : MonoBehaviour
 {
-    //private static x = new PhysicalConst();
     public float temperature;
     private float velocity;
     private Vector3 direction = new Vector3();
@@ -33,7 +32,6 @@ public class StandardBehaviour : MonoBehaviour
         direction.Set(UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f));
         direction.Normalize();
         var relativeVelocity = 0.5f*velocity/(float)mi;
-        //relativeVelocity*=0.2f; //TEMPORARY
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
         Debug.Log(direction);
         Debug.Log(direction.magnitude);
@@ -66,24 +64,6 @@ public class StandardBehaviour : MonoBehaviour
     {
         this.transform.Translate(direction*Time.deltaTime);
         Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
-
-        /*RaycastHit hit = new RaycastHit();
-        /*if(Physics.Raycast(new Ray(this.transform.position,direction),out hit,200f))
-        {
-            Debug.Log("Ray in blood");
-            Debug.Log(hit);
-            Debug.DrawRay(hit.point, -1*hit.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            ReflectVector(ref direction,-1*hit.normal);
-        }*//*
-        var startPos = this.transform.position;
-        var endPos = startPos+direction*5f;
-        if(Physics.Linecast(startPos,endPos,out hit))
-        {
-            Debug.Log("Ray in blood");
-            Debug.Log(hit);
-            Debug.DrawRay(hit.point, -1*hit.normal * 0.1f, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            ReflectVector(ref direction,-1*hit.normal);
-        }*/
     }
 
     void FixedUpdate()
@@ -93,8 +73,6 @@ public class StandardBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        //Debug.Log("I'm in");
-       // Debug.Log(col.tag);
         var contactPoint = new Vector3();
         var normal = new Vector3();
         if(col.tag=="Vessel")
@@ -113,65 +91,4 @@ public class StandardBehaviour : MonoBehaviour
     {
         rigid.WakeUp();
     }
-
-    /*private void OnCollisionEnter(Collision col)
-    {
-        //thisCol.enabled = false;
-        Debug.Log(col.collider);
-        if(col.collider.tag=="Vessel")
-        {
-            Debug.Log("Normal of the first point: " + col.contacts[0].normal);
-            Debug.Log(col.collider.name);
-            Debug.Log(col.contacts[0].normal.x);
-            Debug.Log(col.contacts[0].normal.y);
-            Debug.Log(col.contacts[0].normal.z);
-            foreach (var item in col.contacts)
-            {
-                Debug.DrawRay(item.point, item.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            }
-            Debug.Log(direction);
-            Debug.Log(direction.x);
-            Debug.Log(direction.y);
-            Debug.Log(direction.z);
-            ExtendedMath.ReflectVector(ref direction,col.contacts[0].normal);
-            this.transform.Translate(0.1f*direction);
-            Debug.Log(direction);
-            Debug.Log(direction.x);
-            Debug.Log(direction.y);
-            Debug.Log(direction.z);
-        }
-        //var x = direction;
-        //ReflectVector(ref x,col.contacts[0].normal);
-        //Debug.Log(x.x);
-        //Debug.Log(x.y);
-        //Debug.Log(x.z);
-        //ExtendedMath.ReflectVector(ref direction,-1*col.contacts[0].normal);
-        //rigid.Sleep();
-        //rigid.isKinematic=true;
-        //rigid.Sleep();
-    }
-    private void OnCollisionStay(Collision col)
-    {
-        //this.transform.Translate(0.1f*direction);
-        /*Debug.Log(col.collider);
-        if(col.collider.name=="Cylinder")
-        {
-            Debug.Log("Normal of the first point: " + col.contacts[0].normal);
-            Debug.Log(col.contacts[0].normal.x);
-            Debug.Log(col.contacts[0].normal.y);
-            Debug.Log(col.contacts[0].normal.z);
-            foreach (var item in col.contacts)
-            {
-                Debug.DrawRay(item.point, -1*item.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            }
-        }
-        //var x = direction;
-        //ReflectVector(ref x,col.contacts[0].normal);
-        //Debug.Log(x.x);
-        //Debug.Log(x.y);
-        //Debug.Log(x.z);
-        ReflectVector(ref direction,col.contacts[0].normal);*/
-        
-        //this.transform.Translate(5f*direction*Time.deltaTime);
-    //}
 }
