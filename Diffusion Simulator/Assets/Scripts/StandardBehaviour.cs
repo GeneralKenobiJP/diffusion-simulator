@@ -30,10 +30,10 @@ public class StandardBehaviour : MonoBehaviour
     }
     private void GenerateDirection()
     {
-        direction.Set(UnityEngine.Random.Range(1f,10f),UnityEngine.Random.Range(1f,10f),UnityEngine.Random.Range(1f,10f)); //change so it can be negative
+        direction.Set(UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f));
         direction.Normalize();
-        var relativeVelocity = 0.2f*velocity/(float)mi;
-        relativeVelocity*=0.2f; //TEMPORARY
+        var relativeVelocity = 0.5f*velocity/(float)mi;
+        //relativeVelocity*=0.2f; //TEMPORARY
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
         Debug.Log(direction);
         Debug.Log(direction.magnitude);
@@ -58,6 +58,7 @@ public class StandardBehaviour : MonoBehaviour
         rigid = this.GetComponent<Rigidbody>();
         thisCol = this.GetComponent<Collider>();
         rigid.WakeUp();
+        rigid.isKinematic = true;
     }
 
     // Update is called once per frame
@@ -90,23 +91,31 @@ public class StandardBehaviour : MonoBehaviour
 
     }
 
-    /*private void OnTriggerEnter(Collider col)
+    private void OnTriggerEnter(Collider col)
     {
-        if(col.tag=="vessel")
+        //Debug.Log("I'm in");
+       // Debug.Log(col.tag);
+        var contactPoint = new Vector3();
+        var normal = new Vector3();
+        if(col.tag=="Vessel")
         {
-
+            contactPoint = col.ClosestPoint(this.transform.position);
+            normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
+            ExtendedMath.ReflectVector(ref direction,normal);
+            var dir=direction;
+            dir.Normalize();
+            //this.transform.Translate(0.5f*dir*this.transform.localScale.x);
+            rigid.Sleep();
         }
-    }*/
+    }
 
-    //private void Bounce()
-    //{
-//
-  //  }
-
-    private void OnCollisionEnter(Collision col)
+    private void OnTriggerExit()
     {
-        rigid.Sleep();
-        rigid.isKinematic = true;
+        rigid.WakeUp();
+    }
+
+    /*private void OnCollisionEnter(Collision col)
+    {
         //thisCol.enabled = false;
         Debug.Log(col.collider);
         if(col.collider.tag=="Vessel")
@@ -130,8 +139,6 @@ public class StandardBehaviour : MonoBehaviour
             Debug.Log(direction.x);
             Debug.Log(direction.y);
             Debug.Log(direction.z);
-            rigid.Sleep();
-            rigid.isKinematic = true;
         }
         //var x = direction;
         //ReflectVector(ref x,col.contacts[0].normal);
@@ -166,13 +173,5 @@ public class StandardBehaviour : MonoBehaviour
         ReflectVector(ref direction,col.contacts[0].normal);*/
         
         //this.transform.Translate(5f*direction*Time.deltaTime);
-    }
-    private void OnCollisionExit()
-    {
-        //this.transform.Translate(0.2f*direction);
-        Debug.Log("Hakuna matata");
-        rigid.isKinematic=false;
-        rigid.WakeUp();
-        //thisCol.enabled = true;
-    }
+    //}
 }
