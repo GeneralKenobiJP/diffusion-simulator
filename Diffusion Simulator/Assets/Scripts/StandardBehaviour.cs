@@ -43,6 +43,7 @@ public class StandardBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.transform.localScale=new Vector3(0.05f,0.05f,0.05f); //previously (0.1,0.1,0.1)
         this.transform.position=new Vector3(0f, 3.2f, -7.53f);
         mass=molarMass*PhysicalConst.uToKg;
         mi=Math.Sqrt(2*PhysicalConst.GAS_CONSTANT*temperature/molarMass);
@@ -80,9 +81,16 @@ public class StandardBehaviour : MonoBehaviour
             contactPoint = col.ClosestPoint(this.transform.position);
             normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
             ExtendedMath.ReflectVector(ref direction,normal);
+            rigid.Sleep();
+        }
+        if(col.tag=="GuardVessel")
+        {
+            contactPoint = col.ClosestPoint(this.transform.position);
+            normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
+            ExtendedMath.ReflectVector(ref direction,normal);
             var dir=direction;
             dir.Normalize();
-            //this.transform.Translate(0.5f*dir*this.transform.localScale.x);
+            this.transform.Translate(5f*dir*this.transform.localScale.x*Time.deltaTime);
             rigid.Sleep();
         }
     }

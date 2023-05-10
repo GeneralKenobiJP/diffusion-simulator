@@ -28,7 +28,7 @@ public class VesselCollider : MonoBehaviour
         return normal;
     }
 
-    private void ColliderPopulate(float scale)
+    private void ColliderPopulate(float scale, string colTag)
     {
         var ang = Mathf.PI/PRECISION; //half the central angle
         var degAng = ExtendedMath.RadToDeg(2f*ang); //central angle in degrees
@@ -46,13 +46,13 @@ public class VesselCollider : MonoBehaviour
         planeCollider.transform.Rotate(basicRot);
         planeCollider.transform.localScale = planeScale;
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
-        planeMeshCollider.tag = "Vessel";
+        planeMeshCollider.tag = colTag;
         planeMeshCollider.convex = true;
         /*planeRigid = planeCollider.AddComponent<Rigidbody>();
         planeRigid.isKinematic = true;
         planeRigid.constraints = RigidbodyConstraints.FreezeAll;
         planeRigid.useGravity = false;
-        planeRigid.tag = "Vessel";*/
+        planeRigid.tag = colTag;*/
         //Destroy(planeCollider.GetComponent<MeshRenderer>());
         // ###
         for(var i=2;i<=PRECISION;i++)
@@ -67,7 +67,7 @@ public class VesselCollider : MonoBehaviour
             planeCollider.transform.localScale = planeScale;
             planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
             planeMeshCollider.convex = true;
-            planeMeshCollider.tag = "Vessel";
+            planeMeshCollider.tag = colTag;
             //planeMeshCollider.material = 
             /*planeRigid = planeCollider.AddComponent<Rigidbody>();
             planeRigid.isKinematic = true;
@@ -82,12 +82,12 @@ public class VesselCollider : MonoBehaviour
         planeCollider.transform.localScale = baseScale;
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
-        planeMeshCollider.tag = "Vessel";
+        planeMeshCollider.tag = colTag;
         /*planeRigid = planeCollider.AddComponent<Rigidbody>();
         planeRigid.isKinematic = true;
         planeRigid.constraints = RigidbodyConstraints.FreezeAll;
         planeRigid.useGravity = false;
-        planeRigid.tag = "Vessel";*/
+        planeRigid.tag = colTag;*/
         //Destroy(planeCollider.GetComponent<MeshRenderer>());
 
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -95,19 +95,19 @@ public class VesselCollider : MonoBehaviour
         planeCollider.transform.localScale = baseScale;
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
-        planeMeshCollider.tag = "Vessel";
+        planeMeshCollider.tag = colTag;
         /*planeRigid = planeCollider.AddComponent<Rigidbody>();
         planeRigid.isKinematic = true;
         planeRigid.constraints = RigidbodyConstraints.FreezeAll;
         planeRigid.useGravity = false;
-        planeRigid.tag = "Vessel";*/
+        planeRigid.tag = colTag;*/
         //Destroy(planeCollider.GetComponent<MeshRenderer>());
     }
 
     private void SetupColliders()
     {
-        ColliderPopulate(1f); //Inner colliders (those normal)
-        ColliderPopulate(1.2f*1/Mathf.Cos(Mathf.PI/PRECISION)); //Outer colliders (last resort colliders for forsaken particles)
+        ColliderPopulate(1f,"Vessel"); //Inner colliders (those normal)
+        ColliderPopulate(1.12f*1/Mathf.Cos(Mathf.PI/PRECISION),"GuardVessel"); //Outer colliders (last resort colliders for forsaken particles)
     }
 
     /*private void FlipNormals(MeshCollider MC)
