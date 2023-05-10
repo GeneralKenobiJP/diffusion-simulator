@@ -25,7 +25,7 @@ public class StandardBehaviour : MonoBehaviour
         var z=Mathf.Sqrt(-2*Mathf.Log(u1))*Mathf.Cos(2*Mathf.PI*u2);
         velocity = (float)(z*sigma+mi);
         Debug.Log(velocity);
-        //
+        
         //cannot do Maxwell-Boltzmann Distribution of Speeds implementation because no, so approximating with Gaussian
         //Debug.Log(velocity);
     }
@@ -33,7 +33,7 @@ public class StandardBehaviour : MonoBehaviour
     {
         direction.Set(UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f));
         direction.Normalize();
-        var relativeVelocity = 0.5f*velocity/(float)mi;
+        var relativeVelocity = 0.5f*velocity/(float)CalculateMi(300); //300K is the reference temperature
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
         Debug.Log(direction);
         Debug.Log(direction.magnitude);
@@ -42,13 +42,18 @@ public class StandardBehaviour : MonoBehaviour
         Debug.Log(direction.z);
     }
 
+    private double CalculateMi(float temp) //we might want actual temperature or reference temperature 300K
+    {
+        return Math.Sqrt(2*PhysicalConst.GAS_CONSTANT*temp/molarMass);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         this.transform.localScale=new Vector3(0.05f,0.05f,0.05f); //previously (0.1,0.1,0.1)
         this.transform.position=new Vector3(0f, 3.2f, -7.53f);
         mass=molarMass*PhysicalConst.uToKg;
-        mi=Math.Sqrt(2*PhysicalConst.GAS_CONSTANT*temperature/molarMass);
+        mi=CalculateMi(temperature);
         //mi=0f;
         sigma = Math.Sqrt(PhysicalConst.BOLTZMANN*temperature/molarMass);
         sigma*=1e+11; //making sigma more sensible for the Gaussian approach
@@ -111,7 +116,7 @@ public class StandardBehaviour : MonoBehaviour
     private void EmergencyTrigger()
     {
         direction *= -1f;
-        this.transform.Translate(direction*Time.deltaTime); //making sure it doesn't bounce back
+        this.transform.Translate(2f*direction*Time.deltaTime); //making sure it doesn't bounce back
     }
 
     private void OnTriggerExit()

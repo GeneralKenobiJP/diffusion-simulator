@@ -20,10 +20,9 @@ public class VesselCollider : MonoBehaviour
         if(Point.y<center.y+height/2-0.05f && Point.y>center.y-height/2+0.05f)
         {
             normal = new Vector3(center.x-Point.x,0,center.z-Point.z);
-            Debug.Log("Side by side");
         }
         else
-            {normal = new Vector3(0,center.y-Point.y,0);Debug.Log("Top or bottom?");}
+            {normal = new Vector3(0,center.y-Point.y,0);}
         normal.Normalize();
         return normal;
     }
@@ -48,12 +47,6 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.tag = colTag;
         planeMeshCollider.convex = true;
-        /*planeRigid = planeCollider.AddComponent<Rigidbody>();
-        planeRigid.isKinematic = true;
-        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
-        planeRigid.useGravity = false;
-        planeRigid.tag = colTag;*/
-        //Destroy(planeCollider.GetComponent<MeshRenderer>());
         // ###
         for(var i=2;i<=PRECISION;i++)
         {
@@ -68,12 +61,6 @@ public class VesselCollider : MonoBehaviour
             planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
             planeMeshCollider.convex = true;
             planeMeshCollider.tag = colTag;
-            //planeMeshCollider.material = 
-            /*planeRigid = planeCollider.AddComponent<Rigidbody>();
-            planeRigid.isKinematic = true;
-            planeRigid.constraints = RigidbodyConstraints.FreezeAll;
-            planeRigid.useGravity = false;*/
-            //Destroy(planeCollider.GetComponent<MeshRenderer>());
         }
 
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -83,12 +70,6 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
         planeMeshCollider.tag = colTag;
-        /*planeRigid = planeCollider.AddComponent<Rigidbody>();
-        planeRigid.isKinematic = true;
-        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
-        planeRigid.useGravity = false;
-        planeRigid.tag = colTag;*/
-        //Destroy(planeCollider.GetComponent<MeshRenderer>());
 
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
         planeCollider.transform.position = center-new Vector3(0,height/2*scale,0);
@@ -96,12 +77,6 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
         planeMeshCollider.tag = colTag;
-        /*planeRigid = planeCollider.AddComponent<Rigidbody>();
-        planeRigid.isKinematic = true;
-        planeRigid.constraints = RigidbodyConstraints.FreezeAll;
-        planeRigid.useGravity = false;
-        planeRigid.tag = colTag;*/
-        //Destroy(planeCollider.GetComponent<MeshRenderer>());
     }
 
     private void SetupColliders()
@@ -153,18 +128,6 @@ public class VesselCollider : MonoBehaviour
         {
             Debug.Log(x);
         }*/
-
-        /*GameObject InsideCollider = new GameObject();
-        InsideCollider.name = "Inside Collider";
-        InsideCollider.transform.position = this.transform.position;
-        InsideCollider.transform.parent = this.transform;
-        //InsideCollider.AddComponent<MeshCollider>();
-        //InsideCollider.GetComponent<MeshCollider>()=this.GetComponent<MeshCollider>();
-        //MeshCollider InsideMesh = new MeshCollider();
-        MeshCollider InsideMesh = InsideCollider.AddComponent<MeshCollider>();
-        InsideMesh.sharedMesh=this.GetComponent<MeshCollider>().sharedMesh;
-        InsideMesh.material=this.GetComponent<MeshCollider>().material;
-        InsideMesh.transform.localScale=(new Vector3(0.3f,0.3f,0.3f));*/
         
     }
 
