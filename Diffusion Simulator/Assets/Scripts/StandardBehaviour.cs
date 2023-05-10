@@ -5,7 +5,6 @@ using System;
 
 public class StandardBehaviour : MonoBehaviour
 {
-    //private static x = new PhysicalConst();
     public float temperature;
     private float velocity;
     private Vector3 direction = new Vector3();
@@ -15,6 +14,8 @@ public class StandardBehaviour : MonoBehaviour
     private double mi; //mean
     private Rigidbody rigid;
     private Collider thisCol;
+    GameObject Cylinder;
+    private float centerDistance; //(considering in XZ plane, then in OY axis) if it exceeds the radius of the cylinder, an emergency function gets it back inside
 
     private void SetVelocityStd()
     {
@@ -24,7 +25,7 @@ public class StandardBehaviour : MonoBehaviour
         var z=Mathf.Sqrt(-2*Mathf.Log(u1))*Mathf.Cos(2*Mathf.PI*u2);
         velocity = (float)(z*sigma+mi);
         Debug.Log(velocity);
-        //
+        
         //cannot do Maxwell-Boltzmann Distribution of Speeds implementation because no, so approximating with Gaussian
         //Debug.Log(velocity);
     }
@@ -32,8 +33,7 @@ public class StandardBehaviour : MonoBehaviour
     {
         direction.Set(UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f));
         direction.Normalize();
-        var relativeVelocity = 0.5f*velocity/(float)mi;
-        //relativeVelocity*=0.2f; //TEMPORARY
+        var relativeVelocity = 0.5f*velocity/(float)CalculateMi(300); //300K is the reference temperature
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
         Debug.Log(direction);
         Debug.Log(direction.magnitude);
@@ -42,12 +42,18 @@ public class StandardBehaviour : MonoBehaviour
         Debug.Log(direction.z);
     }
 
+    private double CalculateMi(float temp) //we might want actual temperature or reference temperature 300K
+    {
+        return Math.Sqrt(2*PhysicalConst.GAS_CONSTANT*temp/molarMass);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        this.transform.localScale=new Vector3(0.05f,0.05f,0.05f); //previously (0.1,0.1,0.1)
         this.transform.position=new Vector3(0f, 3.2f, -7.53f);
         mass=molarMass*PhysicalConst.uToKg;
-        mi=Math.Sqrt(2*PhysicalConst.GAS_CONSTANT*temperature/molarMass);
+        mi=CalculateMi(temperature);
         //mi=0f;
         sigma = Math.Sqrt(PhysicalConst.BOLTZMANN*temperature/molarMass);
         sigma*=1e+11; //making sigma more sensible for the Gaussian approach
@@ -59,42 +65,33 @@ public class StandardBehaviour : MonoBehaviour
         thisCol = this.GetComponent<Collider>();
         rigid.WakeUp();
         rigid.isKinematic = true;
+
+        Cylinder = GameObject.Find("Cylinder");
     }
 
     // Update is called once per frame
     void Update()
     {
-        this.transform.Translate(direction*Time.deltaTime);
-        Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
-
-        /*RaycastHit hit = new RaycastHit();
-        /*if(Physics.Raycast(new Ray(this.transform.position,direction),out hit,200f))
-        {
-            Debug.Log("Ray in blood");
-            Debug.Log(hit);
-            Debug.DrawRay(hit.point, -1*hit.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            ReflectVector(ref direction,-1*hit.normal);
-        }*//*
-        var startPos = this.transform.position;
-        var endPos = startPos+direction*5f;
-        if(Physics.Linecast(startPos,endPos,out hit))
-        {
-            Debug.Log("Ray in blood");
-            Debug.Log(hit);
-            Debug.DrawRay(hit.point, -1*hit.normal * 0.1f, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            ReflectVector(ref direction,-1*hit.normal);
-        }*/
+        //this.transform.Translate(direction*Time.deltaTime);
+        //Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
     }
 
     void FixedUpdate()
     {
-
+        centerDistance = new Vector3(this.transform.position.x-Cylinder.transform.position.x,0,this.transform.position.z-Cylinder.transform.position.z).magnitude;
+        if(centerDistance>Cylinder.transform.localScale.x/2f)
+            EmergencyTrigger();
+        else
+        {
+            centerDistance = Mathf.Abs(this.transform.position.y-Cylinder.transform.position.y);
+            if(centerDistance>Cylinder.transform.localScale.y)
+                EmergencyTrigger();
+        }
+        this.transform.Translate(direction*Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider col)
     {
-        //Debug.Log("I'm in");
-       // Debug.Log(col.tag);
         var contactPoint = new Vector3();
         var normal = new Vector3();
         if(col.tag=="Vessel")
@@ -102,76 +99,28 @@ public class StandardBehaviour : MonoBehaviour
             contactPoint = col.ClosestPoint(this.transform.position);
             normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
             ExtendedMath.ReflectVector(ref direction,normal);
-            var dir=direction;
-            dir.Normalize();
-            //this.transform.Translate(0.5f*dir*this.transform.localScale.x);
             rigid.Sleep();
         }
+        if(col.tag=="GuardVessel")
+        {
+            contactPoint = col.ClosestPoint(this.transform.position);
+            normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
+            ExtendedMath.ReflectVector(ref direction,normal);
+            var dir=direction;
+            dir.Normalize();
+            this.transform.Translate(5f*dir*this.transform.localScale.x*Time.deltaTime);
+            rigid.Sleep();
+        }
+    }
+
+    private void EmergencyTrigger()
+    {
+        direction *= -1f;
+        this.transform.Translate(2f*direction*Time.deltaTime); //making sure it doesn't bounce back
     }
 
     private void OnTriggerExit()
     {
         rigid.WakeUp();
     }
-
-    /*private void OnCollisionEnter(Collision col)
-    {
-        //thisCol.enabled = false;
-        Debug.Log(col.collider);
-        if(col.collider.tag=="Vessel")
-        {
-            Debug.Log("Normal of the first point: " + col.contacts[0].normal);
-            Debug.Log(col.collider.name);
-            Debug.Log(col.contacts[0].normal.x);
-            Debug.Log(col.contacts[0].normal.y);
-            Debug.Log(col.contacts[0].normal.z);
-            foreach (var item in col.contacts)
-            {
-                Debug.DrawRay(item.point, item.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            }
-            Debug.Log(direction);
-            Debug.Log(direction.x);
-            Debug.Log(direction.y);
-            Debug.Log(direction.z);
-            ExtendedMath.ReflectVector(ref direction,col.contacts[0].normal);
-            this.transform.Translate(0.1f*direction);
-            Debug.Log(direction);
-            Debug.Log(direction.x);
-            Debug.Log(direction.y);
-            Debug.Log(direction.z);
-        }
-        //var x = direction;
-        //ReflectVector(ref x,col.contacts[0].normal);
-        //Debug.Log(x.x);
-        //Debug.Log(x.y);
-        //Debug.Log(x.z);
-        //ExtendedMath.ReflectVector(ref direction,-1*col.contacts[0].normal);
-        //rigid.Sleep();
-        //rigid.isKinematic=true;
-        //rigid.Sleep();
-    }
-    private void OnCollisionStay(Collision col)
-    {
-        //this.transform.Translate(0.1f*direction);
-        /*Debug.Log(col.collider);
-        if(col.collider.name=="Cylinder")
-        {
-            Debug.Log("Normal of the first point: " + col.contacts[0].normal);
-            Debug.Log(col.contacts[0].normal.x);
-            Debug.Log(col.contacts[0].normal.y);
-            Debug.Log(col.contacts[0].normal.z);
-            foreach (var item in col.contacts)
-            {
-                Debug.DrawRay(item.point, -1*item.normal * 100, UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
-            }
-        }
-        //var x = direction;
-        //ReflectVector(ref x,col.contacts[0].normal);
-        //Debug.Log(x.x);
-        //Debug.Log(x.y);
-        //Debug.Log(x.z);
-        ReflectVector(ref direction,col.contacts[0].normal);*/
-        
-        //this.transform.Translate(5f*direction*Time.deltaTime);
-    //}
 }
