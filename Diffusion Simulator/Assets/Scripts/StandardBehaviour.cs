@@ -14,6 +14,8 @@ public class StandardBehaviour : MonoBehaviour
     private double mi; //mean
     private Rigidbody rigid;
     private Collider thisCol;
+    GameObject Cylinder;
+    private float centerDistance; //(considering in XZ plane, then in OY axis) if it exceeds the radius of the cylinder, an emergency function gets it back inside
 
     private void SetVelocityStd()
     {
@@ -58,18 +60,29 @@ public class StandardBehaviour : MonoBehaviour
         thisCol = this.GetComponent<Collider>();
         rigid.WakeUp();
         rigid.isKinematic = true;
+
+        Cylinder = GameObject.Find("Cylinder");
     }
 
     // Update is called once per frame
     void Update()
     {
-        this.transform.Translate(direction*Time.deltaTime);
-        Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
+        //this.transform.Translate(direction*Time.deltaTime);
+        //Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
     }
 
     void FixedUpdate()
     {
-
+        centerDistance = new Vector3(this.transform.position.x-Cylinder.transform.position.x,0,this.transform.position.z-Cylinder.transform.position.z).magnitude;
+        if(centerDistance>Cylinder.transform.localScale.x/2f)
+            EmergencyTrigger();
+        else
+        {
+            centerDistance = Mathf.Abs(this.transform.position.y-Cylinder.transform.position.y);
+            if(centerDistance>Cylinder.transform.localScale.y)
+                EmergencyTrigger();
+        }
+        this.transform.Translate(direction*Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider col)
@@ -93,6 +106,12 @@ public class StandardBehaviour : MonoBehaviour
             this.transform.Translate(5f*dir*this.transform.localScale.x*Time.deltaTime);
             rigid.Sleep();
         }
+    }
+
+    private void EmergencyTrigger()
+    {
+        direction *= -1f;
+        this.transform.Translate(direction*Time.deltaTime); //making sure it doesn't bounce back
     }
 
     private void OnTriggerExit()

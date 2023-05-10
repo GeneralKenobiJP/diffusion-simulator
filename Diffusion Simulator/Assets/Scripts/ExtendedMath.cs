@@ -27,8 +27,8 @@ public static class ExtendedMath
     }
     public static void ReflectVector(ref Vector3 u,Vector3 v /*Normal of hte surface hit*/)
     {
-        Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(0,0,255), 10f);
+        //Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(0,0,255), 10f);
         u = u-2*Vector3.Dot(u,v)*v/Mathf.Pow(v.magnitude,2);
-        Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(255,0,0), 10f);
+        //Debug.DrawRay(GameObject.Find("Particle").GetComponent<Transform>().position, u* 10f, new Color(255,0,0), 10f);
     }
 }

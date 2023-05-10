@@ -107,7 +107,7 @@ public class VesselCollider : MonoBehaviour
     private void SetupColliders()
     {
         ColliderPopulate(1f,"Vessel"); //Inner colliders (those normal)
-        ColliderPopulate(1.12f*1/Mathf.Cos(Mathf.PI/PRECISION),"GuardVessel"); //Outer colliders (last resort colliders for forsaken particles)
+        //ColliderPopulate(1.12f*1/Mathf.Cos(Mathf.PI/PRECISION),"GuardVessel"); //Outer colliders (last resort colliders for forsaken particles)
     }
 
     /*private void FlipNormals(MeshCollider MC)
