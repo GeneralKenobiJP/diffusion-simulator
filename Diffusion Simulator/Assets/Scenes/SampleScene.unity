@@ -506,6 +506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Particle: {fileID: 9128325852201087811, guid: 5cf61be1b0fe873428fb7e534d284f93, type: 3}
   temperature: 300
+  particleType: Oxygen
 --- !u!1 &1345030620
 GameObject:
   m_ObjectHideFlags: 0

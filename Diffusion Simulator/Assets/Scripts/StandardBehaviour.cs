@@ -5,6 +5,7 @@ using System;
 
 public class StandardBehaviour : MonoBehaviour
 {
+    public ParticleType particleType;
     public float temperature;
     private float velocity;
     private Vector3 direction = new Vector3();
@@ -67,6 +68,9 @@ public class StandardBehaviour : MonoBehaviour
         rigid.isKinematic = true;
 
         Cylinder = GameObject.Find("Cylinder");
+
+        particleType.ToStringDebug();
+        particleType.ToStringDebug();
     }
 
     // Update is called once per frame
