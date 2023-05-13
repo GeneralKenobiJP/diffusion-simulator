@@ -1,6 +1,8 @@
 {
-    "Oxygen":
+    "ParticleType":
+    [
     {
+    "type": "oxygen",
     "molarMass": 32,
     "meltingPoint": 54.36,
     "boilingPoint": 90.188,
@@ -11,8 +13,8 @@
     "color": [119,192,216]
     },
 
-    "Water":
     {
+    "type": "water",
     "molarMass": 18,
     "meltingPoint": 0,
     "boilingPoint": 100,
@@ -23,8 +25,8 @@
     "color": [184,245,247]
     },
 
-    "WaterDye":
     {
+    "type": "waterDye",
     "molarMass": 20,
     "meltingPoint": 0,
     "boilingPoint": 100,
@@ -36,8 +38,8 @@
     "colorful": true
     },
 
-    "Hydrogen":
     {
+    "type": "hydrogen",
     "molarMass": 2,
     "meltingPoint": 13.99,
     "boilingPoint": 20.271,
@@ -48,8 +50,8 @@
     "color": [210,249,252]
     },
 
-    "Nitrogen":
     {
+    "type": "nitrogen",
     "molarMass": 28,
     "meltingPoint": 63.23,
     "boilingPoint": 77.355,
@@ -60,8 +62,8 @@
     "color": [237,254,254]
     },
 
-    "Chlorine":
     {
+    "type": "chlorine",
     "molarMass": 34,
     "meltingPoint": 171.6,
     "boilingPoint": 239.11,
@@ -72,8 +74,8 @@
     "color": [226,246,123]
     },
 
-    "Potassium permanganate":
     {
+    "type": "potassiumPermanganate",
     "molarMass": 158,
     "meltingPoint": 513,
     "boilingPoint": 1500,
@@ -84,8 +86,8 @@
     "color": [84,1,84]
     },
 
-    "Mercury":
     {
+    "type": "mercury",
     "molarMass": 200,
     "meltingPoint": 234.32,
     "boilingPoint": 629.88,
@@ -96,8 +98,8 @@
     "color": [154,153,158]
     },
 
-    "Bromine":
     {
+    "type": "bromine",
     "molarMass": 160,
     "meltingPoint": 265.8,
     "boilingPoint": 332,
@@ -108,8 +110,8 @@
     "color": [164,74,22]
     },
 
-    "Blood":
     {
+        "type": "blood",
         "molarMass": 20,
         "meltingPoint": 0,
         "boilingPoint": 100,
@@ -120,8 +122,8 @@
         "color": [204,0,0]
     },
 
-    "Urine":
     {
+        "type": "urine",
         "molarMass": 20,
         "meltingPoint": 0,
         "boilingPoint": 100,
@@ -132,8 +134,8 @@
         "color": [255,255,107]
     },
 
-    "Petroleum":
     {
+    "type": "petroleum",
     "molarMass": 300,
     "meltingPoint": 270,
     "boilingPoint": 400,
@@ -144,8 +146,8 @@
     "color": [70,38,6]
     },
 
-    "Olive oil":
     {
+    "type": "oliveOil",
     "molarMass": 158,
     "meltingPoint": 266,
     "boilingPoint": 572,
@@ -155,4 +157,5 @@
     "colorGas": [238,238,104,0],
     "color": [238,238,104]
     }
+    ]
 }

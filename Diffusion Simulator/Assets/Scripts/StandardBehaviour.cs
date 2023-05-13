@@ -5,7 +5,7 @@ using System;
 
 public class StandardBehaviour : MonoBehaviour
 {
-    public ParticleType particleType;
+    //public ParticleType particleType;
     public float temperature;
     private float velocity;
     private Vector3 direction = new Vector3();
@@ -69,7 +69,7 @@ public class StandardBehaviour : MonoBehaviour
 
         Cylinder = GameObject.Find("Cylinder");
 
-        particleType = new ParticleType("Oxygen");
+        /*particleType = new ParticleType("Oxygen");
         particleType.boilingPoint="5";
         particleType.meltingPoint="3";
         particleType.bondType="ionic";
@@ -81,7 +81,7 @@ public class StandardBehaviour : MonoBehaviour
         //particleType.ToStringDebug();
         ParticleType.SaveIntoJSON(particleType);
         particleType = new ParticleType();
-        particleType = ParticleType.CreateFromJSON("Oxygen");
+        particleType = ParticleType.CreateFromJSON("Oxygen");*/
         //particleType.ToStringDebug();
     }
 
