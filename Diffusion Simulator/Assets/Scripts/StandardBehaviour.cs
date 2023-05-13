@@ -25,7 +25,7 @@ public class StandardBehaviour : MonoBehaviour
         var u2=UnityEngine.Random.Range(0.001f,1);
         var z=Mathf.Sqrt(-2*Mathf.Log(u1))*Mathf.Cos(2*Mathf.PI*u2);
         velocity = (float)(z*sigma+mi);
-        Debug.Log(velocity);
+        //Debug.Log(velocity);
         
         //cannot do Maxwell-Boltzmann Distribution of Speeds implementation because no, so approximating with Gaussian
         //Debug.Log(velocity);
@@ -36,11 +36,11 @@ public class StandardBehaviour : MonoBehaviour
         direction.Normalize();
         var relativeVelocity = 0.5f*velocity/(float)CalculateMi(300); //300K is the reference temperature
         direction.Set(direction.x*relativeVelocity,this.direction.y*relativeVelocity,this.direction.z*relativeVelocity);
-        Debug.Log(direction);
+        /*Debug.Log(direction);
         Debug.Log(direction.magnitude);
         Debug.Log(direction.x);
         Debug.Log(direction.y);
-        Debug.Log(direction.z);
+        Debug.Log(direction.z);*/
     }
 
     private double CalculateMi(float temp) //we might want actual temperature or reference temperature 300K
@@ -58,8 +58,8 @@ public class StandardBehaviour : MonoBehaviour
         //mi=0f;
         sigma = Math.Sqrt(PhysicalConst.BOLTZMANN*temperature/molarMass);
         sigma*=1e+11; //making sigma more sensible for the Gaussian approach
-        Debug.Log(sigma);
-        Debug.Log(mi);
+        //Debug.Log(sigma);
+        //Debug.Log(mi);
         SetVelocityStd();
         GenerateDirection();
         rigid = this.GetComponent<Rigidbody>();
@@ -69,8 +69,20 @@ public class StandardBehaviour : MonoBehaviour
 
         Cylinder = GameObject.Find("Cylinder");
 
-        particleType.ToStringDebug();
-        particleType.ToStringDebug();
+        particleType = new ParticleType("Oxygen");
+        particleType.boilingPoint="5";
+        particleType.meltingPoint="3";
+        particleType.bondType="ionic";
+        particleType.color="[25,36,78]";
+        particleType.colorGas="[29,99,156]";
+        particleType.dipoleMoment="4";
+        particleType.molarHeatCapacity="30";
+        particleType.molarMass="60";
+        //particleType.ToStringDebug();
+        ParticleType.SaveIntoJSON(particleType);
+        particleType = new ParticleType();
+        particleType = ParticleType.CreateFromJSON("Oxygen");
+        //particleType.ToStringDebug();
     }
 
     // Update is called once per frame

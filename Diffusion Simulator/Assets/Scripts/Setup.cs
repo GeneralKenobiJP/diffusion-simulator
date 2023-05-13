@@ -18,6 +18,9 @@ public class Setup : MonoBehaviour
             particleScript = Particle.GetComponent<StandardBehaviour>();
             particleScript.temperature=temperature;
             particleScript.particleType=ParticleType.CreateFromJSON(particleType);
+            var x = new ParticleJSONSerializer();
+            x = ParticleJSONSerializer.CreateFromJSON("Oxygen");
+            x.ToStringDebug();
         }
     }
 

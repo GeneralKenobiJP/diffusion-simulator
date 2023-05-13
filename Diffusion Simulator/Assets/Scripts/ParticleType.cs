@@ -25,12 +25,19 @@ public class ParticleType
 
     public static ParticleType CreateFromJSON(string particleType)
     {
-        var jsonString = File.ReadAllText("Assets/Scripts/ParticleType.json");
+        var jsonString = File.ReadAllText("Assets/Scripts/Example.json");
         return JsonUtility.FromJson<ParticleType>(jsonString);
     }
     public static void SaveIntoJSON(string particleType)
     {
-        var jsonString = File.OpenWrite("Assets/Scripts/Example.json");
+        var jsonString = JsonUtility.ToJson(new ParticleType(particleType));
+        File.WriteAllText("Assets/Scripts/Example.json",jsonString);
+        //jsonString. (JsonUtility.ToJson(jsonString));
+    }
+    public static void SaveIntoJSON(ParticleType thisParticle)
+    {
+        var jsonString = JsonUtility.ToJson(thisParticle);
+        File.WriteAllText("Assets/Scripts/Example.json",jsonString);
         //jsonString. (JsonUtility.ToJson(jsonString));
     }
 
