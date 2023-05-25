@@ -8,7 +8,7 @@ public class Setup : MonoBehaviour
     public GameObject Particle;
     private StandardBehaviour particleScript;
     public float temperature;
-    public string particleType="oxygen";
+    private string particleType="chlorine"; //private as for now
     // Start is called before the first frame update
     void Start()
     {
@@ -18,11 +18,11 @@ public class Setup : MonoBehaviour
             particleScript = Particle.GetComponent<StandardBehaviour>();
             particleScript.temperature=temperature;
             particleScript.particleType=jsonSerializer.SearchForParticle(particleType);
-            Debug.Log(particleScript.particleType.boilingPoint);
+            /*Debug.Log(particleScript.particleType.boilingPoint);
             Debug.Log(particleScript.particleType.type);
             Debug.Log(particleScript.particleType.color[0]);
             Debug.Log(particleScript.particleType.color[1]);
-            Debug.Log(particleScript.particleType.color[2]);
+            Debug.Log(particleScript.particleType.color[2]);*/
         }
     }
 

@@ -19,11 +19,14 @@ public class jsonSerializer
     public static ParticleType SearchForParticle(string searchType)
     {
         var particleList = FromJson();
+        var num = 0;
+        var i=0;
         foreach(var item in particleList)
         {
             if(item.type==searchType)
-                return item;
+                num=i;
+            i++;
         }
-        return particleList[0]; //emergency return
+        return particleList[num]; //emergency return
     }
 }
