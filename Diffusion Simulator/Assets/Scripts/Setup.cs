@@ -11,9 +11,9 @@ public class Setup : MonoBehaviour
     public float temperature;
     private string particleType="chlorine"; //private as for now
 
-    private const int Y_PROBE_PRECISION=4;
+    private const int Y_PROBE_PRECISION=6;
     private const int ANG_PROBE_PRECISION=4;
-    private const int R_PROBE_PRECISION=4;
+    private const int R_PROBE_PRECISION=2;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +49,12 @@ public class Setup : MonoBehaviour
 
         var posY=center.y;
 
-        for(posY=center.y;posY<=center.y+height/2;posY+=height/(2f*Y_PROBE_PRECISION))
+        var probeRadius = Mathf.Max(2f*height/Y_PROBE_PRECISION,radius/R_PROBE_PRECISION,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION)/*distance between two points sharing r and having different angle*/);
+        Debug.Log(2f*height/Y_PROBE_PRECISION);
+        Debug.Log(radius/R_PROBE_PRECISION);
+        Debug.Log(2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION));
+
+        for(posY=center.y;posY<=center.y+height/2;posY+=2f*height/Y_PROBE_PRECISION)
         {
             CircleScatter(obj);
         }
@@ -68,10 +73,14 @@ public class Setup : MonoBehaviour
                 {
                     var obInst = Instantiate(obj);
                     obInst.transform.position = new Vector3(center.x+r*Mathf.Cos(ang),posY,center.z+r*Mathf.Sin(ang));
+                    obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
+                    //obInst.AddComponent<SphereCollider>();
+                    //obInst.GetComponent<SphereCollider>().radius=probeRadius;
+                    Debug.Log(obInst.GetComponent<CalculationProbe>().probeRadius);
                 }
             }
-            var obInstant = Instantiate(obj);
-            obInstant.transform.position = new Vector3(center.x,posY,center.z);
+            //var obInstant = Instantiate(obj);
+            //obInstant.transform.position = new Vector3(center.x,posY,center.z);
         }
     }
 }
