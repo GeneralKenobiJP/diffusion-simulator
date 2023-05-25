@@ -3,6 +3,7 @@ public class ParticleType
 {
     public string type;
     public float molarMass;
+    //possibly density is needed
     public float meltingPoint;
     public float boilingPoint;
     public float molarHeatCapacity;
