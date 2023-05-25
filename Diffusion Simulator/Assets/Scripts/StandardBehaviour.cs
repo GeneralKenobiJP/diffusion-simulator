@@ -5,7 +5,7 @@ using System;
 
 public class StandardBehaviour : MonoBehaviour
 {
-    //public ParticleType particleType;
+    public ParticleType particleType;
     public float temperature;
     private float velocity;
     private Vector3 direction = new Vector3();

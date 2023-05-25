@@ -5,49 +5,25 @@ using System.IO;
 
 public class jsonSerializer
 {
-    //public string jsonText;
-
-    public class ParticleType
-    {
-        public ParticleType(string typeName)
-        {
-            type = typeName;
-        }
-        public string type;
-        public string molarMass;
-        public string meltingPoint;
-        public string boilingPoint;
-        public string molarHeatCapacity;
-        public string bondType;
-        public string dipoleMoment;
-        public string colorGas;
-        public string color;
-
-        public void ToStringDebug()
-        {
-            Debug.Log(type);
-            Debug.Log(molarMass);
-            Debug.Log(meltingPoint);
-            Debug.Log(boilingPoint);
-            Debug.Log(molarHeatCapacity);
-            Debug.Log(bondType);
-            Debug.Log(dipoleMoment);
-            Debug.Log(colorGas);
-            Debug.Log(color);
-        }
-    }
-
     [System.Serializable]
-    public class ParticleTypeSerializer
-    {
-        public ParticleType[] _particleList;
+    private class ParticleWrapper {
+        public ParticleType[] Items;
     }
-    //public ParticleTypeSerializer jsonParticleType = new ParticleTypeSerializer();
 
-    public static void ParticleCreateFromJSON()
+    public static ParticleType[] FromJson()
     {
-        var jsonText = File.ReadAllText("Assets/Scripts/Example.json");
-        var jsonParticleType = new ParticleTypeSerializer();
-        jsonParticleType = JsonUtility.FromJson<ParticleTypeSerializer>(jsonText);
+        var jsonFile = File.ReadAllText("Assets/Scripts/ParticleType.json");
+        return JsonUtility.FromJson<ParticleWrapper>(jsonFile).Items;
+    }
+
+    public static ParticleType SearchForParticle(string searchType)
+    {
+        var particleList = FromJson();
+        foreach(var item in particleList)
+        {
+            if(item.type==searchType)
+                return item;
+        }
+        return particleList[0]; //emergency return
     }
 }
