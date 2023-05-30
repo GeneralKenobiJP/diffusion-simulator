@@ -56,7 +56,12 @@ public class CalculationProbe : MonoBehaviour
         return 0; //emergency return
     }
 
-    void AddCohesion()
+    private void AddCohesion()
+    {
+
+    }
+
+    private void AddPressure()
     {
 
     }
