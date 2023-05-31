@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CalculationProbe : MonoBehaviour
 {
-    private List<GameObject> probeList;
+    public List<CalculationProbe> columnListHigher;
+    public List<CalculationProbe> columnListLower;
     public float probeRadius;
     public List<ParticleType> substances;
     private float[] massCenter; //array of centers of the masses of physical systems consisting of particular particle type (substance)

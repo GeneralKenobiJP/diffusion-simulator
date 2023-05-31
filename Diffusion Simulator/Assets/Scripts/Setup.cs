@@ -7,6 +7,7 @@ public class Setup : MonoBehaviour
     private const int NUM_PARTICLES = 400;
     private int[] numParticles={250,250};
     public List<ParticleType> substanceArray;
+    public List<CalculationColumn> calculationColumns = new List<CalculationColumn>();
     public GameObject Particle;
     public GameObject CalculationProbeObject;
     private StandardBehaviour particleScript;
@@ -42,6 +43,8 @@ public class Setup : MonoBehaviour
         }
 
         CylinderScatter(CalculationProbeObject);
+
+        DistributeColumnLists();
 
     }
 
@@ -80,6 +83,7 @@ public class Setup : MonoBehaviour
 
         void CircleScatter(GameObject obj)
         {
+            var i = 0; //iterator for calculation columns
             for(var r=radius/R_PROBE_PRECISION;r<=radius;r+=radius/R_PROBE_PRECISION)
             {
                 for(var ang=0f;ang<=Mathf.PI*2f;ang+=Mathf.PI*2f/ANG_PROBE_PRECISION)
@@ -92,6 +96,18 @@ public class Setup : MonoBehaviour
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
+
+                    //Debug.Log(calculationColumns.Count);
+                    if(calculationColumns.Count<=i)
+                    {
+                        var newColumn = new CalculationColumn();
+                        calculationColumns.Add(newColumn);
+                    }
+                    //Debug.Log("later"+calculationColumns.Count);
+                    //Debug.Log(calculationColumns[i].probeList);
+                    //Debug.Log("Now"+obInst.GetComponent<CalculationProbe>());
+                    calculationColumns[i].probeList.Add(obInst.GetComponent<CalculationProbe>());
+                    i++;
                 }
             }
             //var obInstant = Instantiate(obj);
@@ -135,5 +151,17 @@ public class Setup : MonoBehaviour
             j++;
         }
         script.particleType = substanceArray[j];
+    }
+
+    private void DistributeColumnLists()
+    {
+        foreach(var item in calculationColumns)
+            foreach(var subItem in item.probeList)
+            {
+                subItem.columnListHigher = item.GetProbesColumn(subItem.transform.position.y,"higher");
+                subItem.columnListLower = item.GetProbesColumn(subItem.transform.position.y,"lower");
+                Debug.Log(subItem.columnListHigher);
+                Debug.Log(subItem.columnListLower);
+            }
     }
 }
