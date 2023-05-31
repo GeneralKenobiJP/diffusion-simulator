@@ -28,7 +28,7 @@ public class CalculationColumn
                     modeList.Add(item);
             }
         }
-        return probeList;
+        return modeList;
     }
     public List<CalculationProbe> GetProbesColumn() //getprobescolumn
     {

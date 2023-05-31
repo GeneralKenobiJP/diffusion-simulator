@@ -15,13 +15,39 @@ public class CalculationProbe : MonoBehaviour
     void Start()
     {
         pressureForce=0f;
+        StartCoroutine(Compute());
     }
 
     // Update is called once per frame
     void Update()
     {
-        AddPressure();
-        Probe();
+        //AddPressure();
+        //Probe();
+    }
+
+    IEnumerator Compute()
+    {
+        var timeDelay = new WaitForSeconds(0.25f);
+        
+        while(true)
+        {
+            //StartCoroutine(ComputeForces());
+            Probe();
+            AddPressure();
+            //Debug.Log("Compute");
+            yield return timeDelay;
+        }
+
+        IEnumerator ComputeForces()
+        {
+            for(var i=0;i<5;i++)
+            {
+            AddPressure();
+            //Debug.Log("Compute Forces");
+            
+            yield return timeDelay;
+            }
+        }
     }
 
     void Probe()
@@ -76,12 +102,12 @@ public class CalculationProbe : MonoBehaviour
         foreach(var item in columnListHigher)
         {
             s+=item.CalculateWeight(item.colliderScriptList);
-            Debug.Log(s);
+            //Debug.Log(s);
         }
         foreach(var item in columnListLower)
         {
             s-=item.CalculateWeight(item.colliderScriptList);
-            Debug.Log(s);
+            //Debug.Log(s);
         }
         pressureForce=s;
     }
@@ -98,9 +124,9 @@ public class CalculationProbe : MonoBehaviour
 
     private void ApplyPressure()
     {
-        var pressureVector = new Vector3(0,1,0);
+        var pressureVector = new Vector3(0,0.1f,0);
         pressureVector *= pressureForce;
-        Debug.Log(pressureForce);
+        //Debug.Log(pressureForce);
         //pressureVector *= 10f;
         foreach(var item in colliderScriptList)
         {

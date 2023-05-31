@@ -29,9 +29,11 @@ public class Setup : MonoBehaviour
         LoadSubstances();
         for(var i=0;i<NUM_PARTICLES;i++)
         {
-            Instantiate(Particle);
-            Particle.tag="Particle";
-            particleScript = Particle.GetComponent<StandardBehaviour>();
+            var thisParticle = Instantiate(Particle);
+            thisParticle.tag="Particle";
+            //var particleGraphics = thisParticle.GetComponent<MeshRenderer>();
+            //Destroy(particleGraphics); //makes particles invisible; nice for performance, I hope (maybe not)
+            particleScript = thisParticle.GetComponent<StandardBehaviour>();
             particleScript.temperature=temperature;
             AssignSubstances(particleScript, i);
             //particleScript.particleType=jsonSerializer.SearchForParticle(particleType);
@@ -71,11 +73,11 @@ public class Setup : MonoBehaviour
         Debug.Log(radius/R_PROBE_PRECISION);
         Debug.Log(2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION));
 
-        for(posY=center.y;posY<=center.y+height/2;posY+=2f*height/Y_PROBE_PRECISION)
+        for(posY=center.y;posY<=center.y+height/2;posY+=height/Y_PROBE_PRECISION)
         {
             CircleScatter(obj);
         }
-        for(posY=center.y;posY>=center.y-height/2;posY-=height/(2f*Y_PROBE_PRECISION))
+        for(posY=center.y;posY>=center.y-height/2;posY-=height/Y_PROBE_PRECISION)
         {
             if(posY==center.y)
                 continue;

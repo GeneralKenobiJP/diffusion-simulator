@@ -78,6 +78,8 @@ public class StandardBehaviour : MonoBehaviour
 
         Cylinder = GameObject.Find("Cylinder");
 
+        //StartCoroutine(DebugRunTime());
+
         /*particleType = new ParticleType("Oxygen");
         particleType.boilingPoint="5";
         particleType.meltingPoint="3";
@@ -97,8 +99,19 @@ public class StandardBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(direction.magnitude);
         //this.transform.Translate(direction*Time.deltaTime);
         //Debug.DrawRay(this.transform.position, direction * 10f, new Color(0,0,0), 1f);
+    }
+
+    IEnumerator DebugRunTime()
+    {
+        //DebugDirection();
+        while(true)
+        {
+            Debug.Log(direction.magnitude);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     void FixedUpdate()
@@ -151,9 +164,18 @@ public class StandardBehaviour : MonoBehaviour
 
     public void ApplyForce(Vector3 force)
     {
-        direction += force;
+        direction += 0.001f*force*Time.deltaTime;
+        if(direction.magnitude>1f)
+        {
+            //direction.Normalize();
+            direction*=0.6f;
+        }/*
+        else if(direction.magnitude>0.8f)
+            direction*=0.7f;
+        else if(direction.magnitude>0.65f)
+            direction*=0.85f;*/
         //Debug.Log("Applied force");
-        Debug.DrawRay(this.transform.position,force*10f,Color.blue,4f);
+        //Debug.DrawRay(this.transform.position,force*10f,Color.blue,4f);
         //velocity
     }
 
