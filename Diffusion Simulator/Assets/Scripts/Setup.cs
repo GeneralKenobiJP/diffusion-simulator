@@ -5,7 +5,7 @@ using UnityEngine;
 public class Setup : MonoBehaviour
 {
     private const int NUM_PARTICLES = 400;
-    private int[] numParticles={250,250};
+    private int[] numParticles={200,200};
     public List<ParticleType> substanceArray;
     public List<CalculationColumn> calculationColumns = new List<CalculationColumn>();
     public GameObject Particle;
@@ -51,7 +51,8 @@ public class Setup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Debug.Log(Particle.transform.position);
+        //Debug.DrawRay(Particle.transform.position,new Vector3(0,1,0),Color.blue,10f);
     }
 
     private void CylinderScatter(GameObject obj)
@@ -151,6 +152,12 @@ public class Setup : MonoBehaviour
             j++;
         }
         script.particleType = substanceArray[j];
+        script.mass = SetMass();
+
+        float SetMass()
+        {
+            return script.molarMass; //as for now
+        }
     }
 
     private void DistributeColumnLists()
@@ -160,8 +167,8 @@ public class Setup : MonoBehaviour
             {
                 subItem.columnListHigher = item.GetProbesColumn(subItem.transform.position.y,"higher");
                 subItem.columnListLower = item.GetProbesColumn(subItem.transform.position.y,"lower");
-                Debug.Log(subItem.columnListHigher);
-                Debug.Log(subItem.columnListLower);
+                //Debug.Log(subItem.columnListHigher);
+                //Debug.Log(subItem.columnListLower);
             }
     }
 }

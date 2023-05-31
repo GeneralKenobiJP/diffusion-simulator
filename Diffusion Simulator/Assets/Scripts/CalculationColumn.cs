@@ -12,7 +12,7 @@ public class CalculationColumn
     public List<CalculationProbe> GetProbesColumn(float posY, string mode) //getprobescolumn higher/lower than posY
     {
         var modeList = new List<CalculationProbe>();
-        if(mode.ToLower()=="lower")
+        if(mode=="lower")
         {
             foreach(var item in probeList)
             {
