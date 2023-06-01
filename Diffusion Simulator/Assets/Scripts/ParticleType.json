@@ -1,0 +1,161 @@
+{
+    "Items":
+    [
+    {
+    "type": "oxygen",
+    "molarMass": 32,
+    "meltingPoint": 54.36,
+    "boilingPoint": 90.188,
+    "molarHeatCapacity": 29.378,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [255,255,255,0],
+    "color": [119,192,216]
+    },
+
+    {
+    "type": "water",
+    "molarMass": 18,
+    "meltingPoint": 0,
+    "boilingPoint": 100,
+    "molarHeatCapacity": 75.358,
+    "bondType": "polar covalent",
+    "dipoleMoment": 1.8546,
+    "colorGas": [255,255,255,0],
+    "color": [184,245,247]
+    },
+
+    {
+    "type": "waterDye",
+    "molarMass": 20,
+    "meltingPoint": 0,
+    "boilingPoint": 100,
+    "molarHeatCapacity": 70,
+    "bondType": "polar covalent",
+    "dipoleMoment": 1.7,
+    "colorGas": [255,255,255,0],
+    "color": [119,192,216],
+    "colorful": true
+    },
+
+    {
+    "type": "hydrogen",
+    "molarMass": 2,
+    "meltingPoint": 13.99,
+    "boilingPoint": 20.271,
+    "molarHeatCapacity": 28.836,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [255,255,255,0],
+    "color": [210,249,252]
+    },
+
+    {
+    "type": "nitrogen",
+    "molarMass": 28,
+    "meltingPoint": 63.23,
+    "boilingPoint": 77.355,
+    "molarHeatCapacity": 29.124,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [255,255,255,0],
+    "color": [237,254,254]
+    },
+
+    {
+    "type": "chlorine",
+    "molarMass": 34,
+    "meltingPoint": 171.6,
+    "boilingPoint": 239.11,
+    "molarHeatCapacity": 33.949,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [214,249,144,0.8],
+    "color": [226,246,123]
+    },
+
+    {
+    "type": "potassiumPermanganate",
+    "molarMass": 158,
+    "meltingPoint": 513,
+    "boilingPoint": 1500,
+    "molarHeatCapacity": 119.2,
+    "bondType": "ionic",
+    "dipoleMoment": 3,
+    "colorGas": [90,5,90,0.75],
+    "color": [84,1,84]
+    },
+
+    {
+    "type": "mercury",
+    "molarMass": 200,
+    "meltingPoint": 234.32,
+    "boilingPoint": 629.88,
+    "molarHeatCapacity": 27.983,
+    "bondType": "metallic",
+    "dipoleMoment": 0,
+    "colorGas": [154,153,158,0],
+    "color": [154,153,158]
+    },
+
+    {
+    "type": "bromine",
+    "molarMass": 160,
+    "meltingPoint": 265.8,
+    "boilingPoint": 332,
+    "molarHeatCapacity": 75.69,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [164,107,22,0.8],
+    "color": [164,74,22]
+    },
+
+    {
+        "type": "blood",
+        "molarMass": 20,
+        "meltingPoint": 0,
+        "boilingPoint": 100,
+        "molarHeatCapacity": 70,
+        "bondType": "polar covalent",
+        "dipoleMoment": 1.9,
+        "colorGas": [255,255,255,0],
+        "color": [204,0,0]
+    },
+
+    {
+        "type": "urine",
+        "molarMass": 20,
+        "meltingPoint": 0,
+        "boilingPoint": 100,
+        "molarHeatCapacity": 70,
+        "bondType": "polar covalent",
+        "dipoleMoment": 1.8,
+        "colorGas": [255,255,255,0],
+        "color": [255,255,107]
+    },
+
+    {
+    "type": "petroleum",
+    "molarMass": 300,
+    "meltingPoint": 270,
+    "boilingPoint": 400,
+    "molarHeatCapacity": 10,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [35,19,3,0.6],
+    "color": [70,38,6]
+    },
+
+    {
+    "type": "oliveOil",
+    "molarMass": 158,
+    "meltingPoint": 266,
+    "boilingPoint": 572,
+    "molarHeatCapacity": 20,
+    "bondType": "nonpolar covalent",
+    "dipoleMoment": 0,
+    "colorGas": [238,238,104,0],
+    "color": [238,238,104]
+    }
+    ]
+}

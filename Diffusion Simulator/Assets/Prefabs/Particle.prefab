@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 900443562}
   m_Layer: 0
   m_Name: Particle
-  m_TagString: Untagged
+  m_TagString: Particle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,7 +109,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c645b81a6738344aada6c5b62f9337c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particleType:
+    type: chlorine
+    molarMass: 34
+    meltingPoint: 171.6
+    boilingPoint: 239.11
+    molarHeatCapacity: 33.949
+    bondType: nonpolar covalent
+    dipoleMoment: 0
+    colorGas: d6000000f90000009000000000000000
+    color: e2000000f60000007b000000
   temperature: 300
+  mass: 0.032
+  molarMass: 0.032
 --- !u!54 &900443562
 Rigidbody:
   m_ObjectHideFlags: 0

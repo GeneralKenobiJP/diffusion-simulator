@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Vessel
   - GuardVessel
+  - Particle
   layers:
   - Default
   - TransparentFX
