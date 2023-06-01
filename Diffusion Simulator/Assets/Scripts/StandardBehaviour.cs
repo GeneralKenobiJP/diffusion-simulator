@@ -181,8 +181,9 @@ public class StandardBehaviour : MonoBehaviour
 
     public void DebugDirection()
     {
-        Debug.Log(direction.x);
-        Debug.Log(direction.y);
-        Debug.Log(direction.z);
+        //Debug.Log(direction.x);
+        //Debug.Log(direction.y);
+        //Debug.Log(direction.z);
+        Debug.Log(direction.magnitude);
     }
 }

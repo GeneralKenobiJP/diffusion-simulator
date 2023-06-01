@@ -15,6 +15,7 @@ public class CalculationProbe : MonoBehaviour
     void Start()
     {
         pressureForce=0f;
+        Probe();
         StartCoroutine(Compute());
     }
 
@@ -27,26 +28,14 @@ public class CalculationProbe : MonoBehaviour
 
     IEnumerator Compute()
     {
-        var timeDelay = new WaitForSeconds(0.25f);
+        var timeDelay = new WaitForSeconds(0.2f);
         
         while(true)
         {
-            //StartCoroutine(ComputeForces());
             Probe();
             AddPressure();
             //Debug.Log("Compute");
             yield return timeDelay;
-        }
-
-        IEnumerator ComputeForces()
-        {
-            for(var i=0;i<5;i++)
-            {
-            AddPressure();
-            //Debug.Log("Compute Forces");
-            
-            yield return timeDelay;
-            }
         }
     }
 
@@ -64,11 +53,9 @@ public class CalculationProbe : MonoBehaviour
                     colliderScriptList.Add(item.GetComponent<StandardBehaviour>());
                     var i = GetSubstanceNum(item);
                     //Debug.Log(i);
-
-                    //ConvertPressure();
-                    ApplyPressure();
                 }
             }
+            ApplyPressure();
         }
     }
 
@@ -124,7 +111,7 @@ public class CalculationProbe : MonoBehaviour
 
     private void ApplyPressure()
     {
-        var pressureVector = new Vector3(0,0.1f,0);
+        var pressureVector = new Vector3(0,1f,0);
         pressureVector *= pressureForce;
         //Debug.Log(pressureForce);
         //pressureVector *= 10f;

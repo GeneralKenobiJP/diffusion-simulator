@@ -42,11 +42,24 @@ public class Setup : MonoBehaviour
             Debug.Log(particleScript.particleType.color[0]);
             Debug.Log(particleScript.particleType.color[1]);
             Debug.Log(particleScript.particleType.color[2]);*/
+
+            if(i==0)
+                StartCoroutine(DebugOneParticle(particleScript));
         }
 
         CylinderScatter(CalculationProbeObject);
 
         DistributeColumnLists();
+
+    }
+
+    IEnumerator DebugOneParticle(StandardBehaviour obj)
+    {
+        while(true)
+        {
+            obj.DebugDirection();
+            yield return new WaitForSeconds(0.2f);
+        }
 
     }
 

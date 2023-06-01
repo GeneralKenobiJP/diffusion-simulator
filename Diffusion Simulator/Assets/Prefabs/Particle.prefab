@@ -110,15 +110,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleType:
-    type: water
-    molarMass: 18
-    meltingPoint: 0
-    boilingPoint: 100
-    molarHeatCapacity: 75.358
-    bondType: polar covalent
-    dipoleMoment: 1.8546
-    colorGas: ff000000ff000000ff00000000000000
-    color: b8000000f5000000f7000000
+    type: chlorine
+    molarMass: 34
+    meltingPoint: 171.6
+    boilingPoint: 239.11
+    molarHeatCapacity: 33.949
+    bondType: nonpolar covalent
+    dipoleMoment: 0
+    colorGas: d6000000f90000009000000000000000
+    color: e2000000f60000007b000000
   temperature: 300
   mass: 0.032
   molarMass: 0.032
