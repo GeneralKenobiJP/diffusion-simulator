@@ -11,4 +11,5 @@ public class ParticleType
     public float dipoleMoment;
     public int[] colorGas;
     public int[] color;
+    public float normalDensity;
 }
