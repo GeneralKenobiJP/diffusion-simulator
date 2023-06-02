@@ -22,6 +22,7 @@ public class Setup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Destroy(GameObject.Find("Particle")); //TEMP
         var a = "water";
         var b = "chlorine";
         particleType.Add(a);
@@ -168,6 +169,7 @@ public class Setup : MonoBehaviour
         }
         script.particleType = substanceArray[j];
         script.mass = SetMass();
+        script.AssignColor();
 
         float SetMass()
         {

@@ -89,12 +89,12 @@ public class CalculationProbe : MonoBehaviour
             }
             AddPressure();
             FinalizeMass(localMass);
-            Debug.Log(massCenter[0].x);
+            /*Debug.Log(massCenter[0].x);
             Debug.Log(massCenter[0].y);
             Debug.Log(massCenter[0].z);
             Debug.Log(massCenter[1].x);
             Debug.Log(massCenter[1].y);
-            Debug.Log(massCenter[1].z);
+            Debug.Log(massCenter[1].z);*/
             AddCohesion(localMass);
         }
     }

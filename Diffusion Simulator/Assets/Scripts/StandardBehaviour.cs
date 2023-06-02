@@ -179,6 +179,15 @@ public class StandardBehaviour : MonoBehaviour
         //velocity
     }
 
+    public void AssignColor()
+    {
+        Debug.Log(particleType.color[0]);
+        Debug.Log(particleType.color[1]);
+        Debug.Log(particleType.color[2]);
+        var thisMaterial = this.GetComponent<Renderer>().material;
+        thisMaterial.color = new Color32(particleType.color[0],particleType.color[1],particleType.color[2],255);
+    }
+
     public void DebugDirection()
     {
         //Debug.Log(direction.x);
