@@ -108,7 +108,7 @@ public class Setup : MonoBehaviour
                     var obInst = Instantiate(obj);
                     obInst.transform.position = new Vector3(center.x+r*Mathf.Cos(ang),posY,center.z+r*Mathf.Sin(ang));
                     probeRadius = Mathf.Max(PROBE_RADIUS_MINIMUM,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION)/*distance between two points sharing r and having different angle*/);
-                    Debug.Log(probeRadius);
+                    //Debug.Log(probeRadius);
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);

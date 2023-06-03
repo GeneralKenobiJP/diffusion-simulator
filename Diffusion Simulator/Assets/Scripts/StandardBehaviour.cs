@@ -60,7 +60,7 @@ public class StandardBehaviour : MonoBehaviour
     void Start()
     {
         REFERENCE_MI=CalculateMi(300);
-        this.transform.localScale=new Vector3(0.05f,0.05f,0.05f); //previously (0.1,0.1,0.1)
+        this.transform.localScale=new Vector3(0.05f,0.05f,0.05f);
         this.transform.position=new Vector3(0f, 3.2f, -7.53f);
         //mass=molarMass*PhysicalConst.uToKg;
         mi=CalculateMi(temperature);
@@ -181,9 +181,9 @@ public class StandardBehaviour : MonoBehaviour
 
     public void AssignColor()
     {
-        Debug.Log(particleType.color[0]);
-        Debug.Log(particleType.color[1]);
-        Debug.Log(particleType.color[2]);
+        //Debug.Log(particleType.color[0]);
+        //Debug.Log(particleType.color[1]);
+        //Debug.Log(particleType.color[2]);
         var thisMaterial = this.GetComponent<Renderer>().material;
         thisMaterial.color = new Color32(particleType.color[0],particleType.color[1],particleType.color[2],255);
     }

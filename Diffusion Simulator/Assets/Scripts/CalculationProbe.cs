@@ -11,6 +11,7 @@ public class CalculationProbe : MonoBehaviour
     public List<StandardBehaviour> colliderScriptList;
     public List<List<StandardBehaviour>> colliderScriptListSortedForSubstances;
     private float pressureForce; //positive for up, negative for down
+    private float[] cohesionForceComponent;
     private float[] cohesionForce; //non-negative
     private Vector3[] massCenter; //array of centers of the masses of physical systems consisting of particular particle type (substance)
     // Start is called before the first frame update
@@ -19,21 +20,50 @@ public class CalculationProbe : MonoBehaviour
     {
         pressureForce=0f;
         temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
-        SetupColliderScriptListSorted();
+        SetupForces();
         Probe();
         StartCoroutine(Compute());
     }
 
-    private void SetupColliderScriptListSorted()
+    private void SetupForces()
     {
         colliderScriptListSortedForSubstances = new List<List<StandardBehaviour>>();
         foreach(var item in substances)
             colliderScriptListSortedForSubstances.Add(new List<StandardBehaviour>());
         massCenter = new Vector3[substances.Count];
+        cohesionForceComponent = new float[substances.Count];
         cohesionForce = new float[substances.Count];
         for(var i=0;i<substances.Count;i++)
         {
             massCenter[i] = new Vector3(0f,0f,0f);
+            cohesionForceComponent[i] = SetupCohesionComponent(i);
+            //Debug.Log(cohesionForceComponent[0]);
+        }
+
+        float SetupCohesionComponent(int j)
+        {
+            var coh = 20f;
+            coh+=substances[j].normalDensity;
+            if(substances[j].dipoleMoment>0)
+                coh*=(substances[j].dipoleMoment*substances[j].dipoleMoment);
+
+            switch(substances[j].bondType)
+            {
+                case "metallic":
+                    coh*=25f;
+                    break;
+                case "ionic":
+                    coh*=20f;
+                    break;
+                case "polar covalent":
+                    coh*=5f;
+                    break;
+                default: //non-polar covalent
+                    coh*=0.5f;
+                    break;
+            }
+            //Debug.Log(coh);
+            return coh;
         }
     }
     private void CleanColliderScriptListSorted()
@@ -60,6 +90,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyPressure();
             //ApplyCohesion();
             //Debug.Log(cohesionForce[0]);
+            //Debug.Log(pressureForce);
             //Debug.Log(cohesionForce[1]);
             yield return timeDelay;
         }
@@ -88,7 +119,7 @@ public class CalculationProbe : MonoBehaviour
                 }
             }
             AddPressure();
-            FinalizeMass(localMass);
+            //FinalizeMass(localMass);
             /*Debug.Log(massCenter[0].x);
             Debug.Log(massCenter[0].y);
             Debug.Log(massCenter[0].z);
@@ -117,16 +148,27 @@ public class CalculationProbe : MonoBehaviour
         }
         return 0; //emergency return
     }
+    private int GetSubstanceNum(StandardBehaviour thisScript)
+    {
+        var i=0;
+        foreach(var item in substances)
+        {
+            if(item.type==thisScript.particleType.type)
+                return i;
+            i++;
+        }
+        return 0; //emergency return
+    }
     ///
     ///ADD FORCES (used to calculate forces before applying them)
     ///
     private void AddToMass(Collider thisParticle, int substanceNum, ref float localMass)
     {
         var thisMass = thisParticle.GetComponent<StandardBehaviour>().mass; //actually the masses do not matter (m/m)
-        massCenter[substanceNum] = thisParticle.transform.position*thisMass;
+        massCenter[substanceNum] = thisParticle.transform.position;
         localMass+=thisMass;
     }
-    private void FinalizeMass(float[] localMass)
+    private void FinalizeMass(float[] localMass) //unneeded
     {
         for(var i=0;i<substances.Count;i++)
         {
@@ -135,34 +177,17 @@ public class CalculationProbe : MonoBehaviour
     }
     private void AddCohesion(float[] localMass)
     {
+        //Debug.Log(cohesionForceComponent[0]);
+        var thisForce = cohesionForceComponent;
         for(var i=0;i<substances.Count;i++)
         {
-            var thisForce = 20f;
-            thisForce+=substances[i].normalDensity;
-            if(substances[i].dipoleMoment>0)
-                thisForce*=(substances[i].dipoleMoment*substances[i].dipoleMoment);
-
-            switch(substances[i].bondType)
-            {
-                case "metallic":
-                    thisForce*=25f;
-                    break;
-                case "ionic":
-                    thisForce*=20f;
-                    break;
-                case "polar covalent":
-                    thisForce*=5f;
-                    break;
-                default: //non-polar covalent
-                    thisForce*=0.5f;
-                    break;
-            }
             if(temperature>=substances[i].boilingPoint)
-                thisForce*=0.1f;
+                thisForce[i]*=0.1f;
             else if(temperature<substances[i].meltingPoint)
-                thisForce*=50f;
-            thisForce*=localMass[i];
-            cohesionForce[i] = thisForce;
+                thisForce[i]*=50f;
+            thisForce[i]*=localMass[i];
+            thisForce[i]*=0.1f;
+            cohesionForce[i] = thisForce[i];
             //Debug.Log(cohesionForce[i]);
         }
     }
@@ -196,7 +221,7 @@ public class CalculationProbe : MonoBehaviour
     ///
     private void ApplyPressure()
     {
-        var pressureVector = new Vector3(0,1f,0);
+        var pressureVector = new Vector3(0,1.25f,0);
         pressureVector *= pressureForce;
         //Debug.Log(pressureForce);
         //pressureVector *= 10f;
@@ -207,16 +232,25 @@ public class CalculationProbe : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        var gravityVector = new Vector3(0,-0.1f,0);
+        var gravityVectorTemp = new Vector3(0,-0.1f,0);
         foreach(var item in colliderScriptList)
         {
-            gravityVector *= item.mass;
+            var gravityVector = gravityVectorTemp*item.mass;
             item.ApplyForce(gravityVector);
         }
     }
 
     private void ApplyCohesion()
     {
-        
+        var cohesionVector = new Vector3();
+        foreach(var item in colliderScriptList)
+        {
+            var i = GetSubstanceNum(item);
+            cohesionVector = massCenter[i]-item.transform.position;
+            cohesionVector.Normalize();
+            cohesionVector*=cohesionForce[i];
+            item.ApplyForce(cohesionVector);
+            //Debug.Log(cohesionVector.magnitude);
+        }
     }
 }

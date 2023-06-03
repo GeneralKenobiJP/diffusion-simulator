@@ -117,8 +117,8 @@ MonoBehaviour:
     molarHeatCapacity: 33.949
     bondType: nonpolar covalent
     dipoleMoment: 0
-    colorGas: {r: 0, g: 0, b: 0, a: 0}
-    color: {r: 0, g: 0, b: 0, a: 0}
+    colorGas: 00000000
+    color: 00000000
     normalDensity: 0
   temperature: 300
   mass: 0.032
