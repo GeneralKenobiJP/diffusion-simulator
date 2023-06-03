@@ -21,6 +21,8 @@ public class CalculationProbe : MonoBehaviour
         pressureForce=0f;
         temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
         SetupForces();
+        Debug.Log(cohesionForceComponent[0]);
+        Debug.Log(cohesionForceComponent[1]);
         Probe();
         StartCoroutine(Compute());
     }
@@ -42,26 +44,27 @@ public class CalculationProbe : MonoBehaviour
 
         float SetupCohesionComponent(int j)
         {
-            var coh = 20f;
-            coh+=substances[j].normalDensity;
+            var coh = 4f;
+            coh+=(0.2f*substances[j].normalDensity);
             if(substances[j].dipoleMoment>0)
-                coh*=(substances[j].dipoleMoment*substances[j].dipoleMoment);
+                coh*=substances[j].dipoleMoment;
 
             switch(substances[j].bondType)
             {
                 case "metallic":
-                    coh*=25f;
+                    coh*=5f;
                     break;
                 case "ionic":
-                    coh*=20f;
+                    coh*=3f;
                     break;
                 case "polar covalent":
-                    coh*=5f;
+                    coh*=1.25f;
                     break;
                 default: //non-polar covalent
                     coh*=0.5f;
                     break;
             }
+            coh*=0.1f;
             //Debug.Log(coh);
             return coh;
         }
@@ -88,9 +91,9 @@ public class CalculationProbe : MonoBehaviour
         {
             Probe();
             ApplyPressure();
-            ApplyCohesion();
+            //ApplyCohesion();
             //Debug.Log(cohesionForce[0]);
-            //Debug.Log(pressureForce);
+            Debug.Log(pressureForce);
             //Debug.Log(cohesionForce[1]);
             yield return timeDelay;
         }
@@ -182,14 +185,15 @@ public class CalculationProbe : MonoBehaviour
         for(var i=0;i<substances.Count;i++)
         {
             if(temperature>=substances[i].boilingPoint)
-                thisForce[i]*=0.1f;
+                thisForce[i]*=0.25f;
             else if(temperature<substances[i].meltingPoint)
-                thisForce[i]*=50f;
-            thisForce[i]*=localMass[i];
-            thisForce[i]*=0.1f;
+                thisForce[i]*=10f;
+            thisForce[i]*=Mathf.Sqrt(localMass[i]);
+            thisForce[i]*=0.5f;
             cohesionForce[i] = thisForce[i];
             //Debug.Log(cohesionForce[i]);
         }
+        //Debug.Log(cohesionForce[0]);
     }
     private void AddPressure()
     {

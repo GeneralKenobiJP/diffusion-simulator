@@ -17,7 +17,7 @@ public class CameraMovement : MonoBehaviour
         RotationCenter.transform.position = new Vector3(cylinderPos.x,this.transform.position.y,cylinderPos.z);
         StartingPoint = this.transform.position;
         RotationRadius=StartingPoint-RotationCenter.transform.position;
-        Debug.DrawRay(RotationCenter.transform.position,RotationRadius,new Color(255,0,125),20f);
+        //Debug.DrawRay(RotationCenter.transform.position,RotationRadius,new Color(255,0,125),20f);
     }
 
     // Update is called once per frame

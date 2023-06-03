@@ -23,7 +23,7 @@ public class Setup : MonoBehaviour
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "water";
+        var a = "mercury";
         var b = "chlorine";
         particleType.Add(a);
         particleType.Add(b);
@@ -168,12 +168,17 @@ public class Setup : MonoBehaviour
             j++;
         }
         script.particleType = substanceArray[j];
+        script.molarMass = SetMolarMass();
         script.mass = SetMass();
         script.AssignColor();
 
         float SetMass()
         {
-            return script.molarMass; //as for now
+            return script.particleType.normalDensity/200f; //as for now
+        }
+        float SetMolarMass()
+        {
+            return script.particleType.molarMass/1000f;
         }
     }
 
