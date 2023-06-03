@@ -88,7 +88,7 @@ public class CalculationProbe : MonoBehaviour
         {
             Probe();
             ApplyPressure();
-            //ApplyCohesion();
+            ApplyCohesion();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(pressureForce);
             //Debug.Log(cohesionForce[1]);
@@ -221,7 +221,7 @@ public class CalculationProbe : MonoBehaviour
     ///
     private void ApplyPressure()
     {
-        var pressureVector = new Vector3(0,1.25f,0);
+        var pressureVector = new Vector3(0,1.1f,0);
         pressureVector *= pressureForce;
         //Debug.Log(pressureForce);
         //pressureVector *= 10f;
