@@ -48,7 +48,7 @@ public class CalculationProbe : MonoBehaviour
         for (var i = 0; i < substances.Count * (substances.Count - 1) / 2; i++)
         {
             adhesionForceComponent[i] = SetupAdhesionComponent(i);
-            //Debug.Log(adhesionForceComponent[i]);
+            Debug.Log(adhesionForceComponent[i]);
         }
 
         float SetupCohesionComponent(int j)
@@ -79,7 +79,7 @@ public class CalculationProbe : MonoBehaviour
         }
         float SetupAdhesionComponent(int j)
         {
-            var adh = 2.5f;
+            var adh = 2f;
             var subNum = GetSubstanceNumPair(j);
             //Debug.Log(subNum[0]);
             //Debug.Log(subNum[1]);
@@ -98,10 +98,10 @@ public class CalculationProbe : MonoBehaviour
                     adh *= 0.4f;
                     break;
                 case "ionic":
-                    adh *= 2.5f;
+                    adh *= 2f;
                     break;
                 case "polar covalent":
-                    adh *= 2f;
+                    adh *= 1.5f;
                     break;
                 default: //non-polar covalent
                     adh *= 0.5f;
@@ -113,10 +113,10 @@ public class CalculationProbe : MonoBehaviour
                     adh *= 0.4f;
                     break;
                 case "ionic":
-                    adh *= 2.5f;
+                    adh *= 2f;
                     break;
                 case "polar covalent":
-                    adh *= 2f;
+                    adh *= 1.5f;
                     break;
                 default: //non-polar covalent
                     adh *= 0.5f;
@@ -140,7 +140,7 @@ public class CalculationProbe : MonoBehaviour
         //AddPressure();
         //Probe();
     }
-
+    /// UPDATING SCRIPT
     IEnumerator Compute()
     {
         var timeDelay = new WaitForSeconds(0.2f);
@@ -149,8 +149,11 @@ public class CalculationProbe : MonoBehaviour
         {
             Probe();
             ApplyPressure();
-            //ApplyCohesion();
+            ApplyCohesion();
+            ApplyAdhesion();
             //Debug.Log(cohesionForce[0]);
+            //Debug.Log(cohesionForce[1]);
+            //Debug.Log(adhesionForce[0]);
             //Debug.Log(pressureForce);
             //Debug.Log(cohesionForce[1]);
             yield return timeDelay;
@@ -234,6 +237,31 @@ public class CalculationProbe : MonoBehaviour
         }
         return new int[2] { x - 1, j - k + x };
     }
+    bool IsSubstanceNumInPair(int subNum, int pairNum)
+    {
+        var pairSubs = GetSubstanceNumPair(pairNum);
+        if(subNum == pairSubs[0] || subNum == pairSubs[1])
+            return true;
+        else
+            return false;
+    }
+    bool IsSubstanceNumInPair(int subNum, int pairNum, out int secondInPair)
+    {
+        secondInPair = -1;
+        var pairSubs = GetSubstanceNumPair(pairNum);
+        if(subNum == pairSubs[0])
+        {
+            secondInPair = pairSubs[1];
+            return true;
+        }
+        else if(subNum == pairSubs[1])
+        {
+            secondInPair = pairSubs[0];
+            return true;
+        }
+        else
+            return false;
+    }
     ///
     ///ADD FORCES (used to calculate forces before applying them)
     ///
@@ -259,9 +287,9 @@ public class CalculationProbe : MonoBehaviour
             if (temperature >= substances[i].boilingPoint)
                 thisForce[i] *= 0.25f;
             else if (temperature < substances[i].meltingPoint)
-                thisForce[i] *= 10f;
+                thisForce[i] *= 3.5f;
             thisForce[i] *= Mathf.Sqrt(localMass[i]);
-            thisForce[i] *= 0.5f;
+            thisForce[i] *= 0.2f;
             cohesionForce[i] = thisForce[i];
             //Debug.Log(cohesionForce[i]);
         }
@@ -279,8 +307,9 @@ public class CalculationProbe : MonoBehaviour
                 thisForce[i] *= 0.2f;
             //Debug.Log(thisForce[i]);
             var surfaceForce = Mathf.Abs(cohesionForceComponent[subNum[0]]-cohesionForceComponent[subNum[1]]);
-            thisForce[i]+=surfaceForce;
-            //ADD THE MASS THINGY
+            thisForce[i]*=surfaceForce;
+            thisForce[i]*=0.0001f*Mathf.Abs(substances[subNum[0]].molarMass-substances[subNum[1]].molarMass)*(localMass[subNum[0]]+localMass[subNum[1]]);
+
             adhesionForce[i]=thisForce[i];
         }
     }
@@ -344,6 +373,27 @@ public class CalculationProbe : MonoBehaviour
             cohesionVector *= cohesionForce[i];
             item.ApplyForce(cohesionVector);
             //Debug.Log(cohesionVector.magnitude);
+        }
+    }
+    private void ApplyAdhesion()
+    {
+        var adhesionVector = new Vector3();
+        foreach(var item in colliderScriptList)
+        {
+            for(var i=0;i<substances.Count*(substances.Count-1)/2;i++)
+            {
+                var other = new int();
+                if(!IsSubstanceNumInPair(GetSubstanceNum(item),i,out other))
+                    continue;
+                else
+                {
+                    adhesionVector = massCenter[other] - item.transform.position;
+                    adhesionVector.Normalize();
+                    adhesionVector *= adhesionForce[i];
+                    //Debug.Log(adhesionVector.magnitude);
+                    item.ApplyForce(adhesionVector);
+                }
+            }
         }
     }
 }

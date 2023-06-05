@@ -24,7 +24,7 @@ public class Setup : MonoBehaviour
     {
         Destroy(GameObject.Find("Particle")); //TEMP
         var a = "water";
-        var b = "mercury";
+        var b = "potassiumPermanganate";
         particleType.Add(a);
         particleType.Add(b);
         LoadSubstances();

@@ -178,6 +178,15 @@ public class StandardBehaviour : MonoBehaviour
         //Debug.DrawRay(this.transform.position,force*10f,Color.blue,4f);
         //velocity
     }
+    public void ApplyForceMass(Vector3 force)
+    {
+        direction += 0.000005f*force*Time.deltaTime/mass;
+        if(direction.magnitude>1f)
+        {
+            //direction.Normalize();
+            direction*=0.6f;
+        }
+    }
 
     public void AssignColor()
     {
