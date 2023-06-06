@@ -111,6 +111,7 @@ public class Setup : MonoBehaviour
                     //Debug.Log(probeRadius);
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
+                    obInst.GetComponent<CalculationProbe>().cylinderCenter=center;
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
 

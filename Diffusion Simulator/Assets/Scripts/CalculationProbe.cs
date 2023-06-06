@@ -18,11 +18,14 @@ public class CalculationProbe : MonoBehaviour
     private Vector3[] massCenter; //array of centers of the masses of physical systems consisting of particular particle type (substance)
     // Start is called before the first frame update
     private float temperature;
+    private ColorPoint[] interpolationPoints;
+    public Vector3 cylinderCenter;
     void Start()
     {
         pressureForce = 0f;
         temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
         SetupForces();
+        SetupInterpolationPoints();
         //Debug.Log(cohesionForceComponent[0]);
         //Debug.Log(cohesionForceComponent[1]);
         Probe();
@@ -43,12 +46,12 @@ public class CalculationProbe : MonoBehaviour
         {
             massCenter[i] = new Vector3(0f, 0f, 0f);
             cohesionForceComponent[i] = SetupCohesionComponent(i);
-            Debug.Log(cohesionForceComponent[i]);
+            //Debug.Log(cohesionForceComponent[i]);
         }
         for (var i = 0; i < substances.Count * (substances.Count - 1) / 2; i++)
         {
             adhesionForceComponent[i] = SetupAdhesionComponent(i);
-            Debug.Log(adhesionForceComponent[i]);
+            //Debug.Log(adhesionForceComponent[i]);
         }
 
         float SetupCohesionComponent(int j)
@@ -140,6 +143,7 @@ public class CalculationProbe : MonoBehaviour
         //AddPressure();
         //Probe();
     }
+
     /// UPDATING SCRIPT
     IEnumerator Compute()
     {
@@ -151,6 +155,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyPressure();
             ApplyCohesion();
             ApplyAdhesion();
+            InterpolateColor();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(cohesionForce[1]);
             //Debug.Log(adhesionForce[0]);
@@ -395,5 +400,31 @@ public class CalculationProbe : MonoBehaviour
                 }
             }
         }
+    }
+
+
+
+    /// INTERPOLATION SECTION ///
+
+
+    private void SetupInterpolationPoints()
+    {
+        interpolationPoints = new ColorPoint[1]; //CHANGE THIS
+        for(var i=0;i<interpolationPoints.Length;i++)
+            interpolationPoints[i] = new ColorPoint();
+    }
+    private void InterpolateColor()
+    {
+        var inputPoints = new ColorPoint[colliderScriptList.Count];
+        var i=0;
+        foreach(var item in colliderScriptList)
+        {
+            inputPoints[i] = new ColorPoint();
+            //Debug.Log(item.transform.position);
+            inputPoints[i].position = item.transform.position;
+            i++;
+        }
+        Interpolator.IDW(inputPoints, ref interpolationPoints);
+        interpolationPoints[0].colorHSV.DebugHSV();
     }
 }
