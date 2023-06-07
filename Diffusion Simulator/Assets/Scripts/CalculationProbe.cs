@@ -19,9 +19,12 @@ public class CalculationProbe : MonoBehaviour
     // Start is called before the first frame update
     private float temperature;
     private ColorPoint[] interpolationPoints;
+    private GameObject[] interpolationObjects;
+    private Material interpolationMaterial;
     public Vector3 cylinderCenter;
     void Start()
     {
+        interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
         pressureForce = 0f;
         temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
         SetupForces();
@@ -147,7 +150,7 @@ public class CalculationProbe : MonoBehaviour
     /// UPDATING SCRIPT
     IEnumerator Compute()
     {
-        var timeDelay = new WaitForSeconds(0.2f);
+        var timeDelay = new WaitForSeconds(0.2f); //0.2f
 
         while (true)
         {
@@ -412,19 +415,38 @@ public class CalculationProbe : MonoBehaviour
         interpolationPoints = new ColorPoint[1]; //CHANGE THIS
         for(var i=0;i<interpolationPoints.Length;i++)
             interpolationPoints[i] = new ColorPoint();
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.position = this.transform.position;
+        cube.transform.rotation = this.transform.rotation;
+        cube.transform.localScale = new Vector3(0.03f,0.03f,0.03f);
+        interpolationObjects = new GameObject[1];
+        //interpolationObjects[0] = new GameObject();
+        interpolationObjects[0] = cube;
+        
+        interpolationObjects[0].GetComponent<Renderer>().material=interpolationMaterial;
     }
     private void InterpolateColor()
     {
-        var inputPoints = new ColorPoint[colliderScriptList.Count];
-        var i=0;
-        foreach(var item in colliderScriptList)
+        if(colliderScriptList.Count>0)
         {
-            inputPoints[i] = new ColorPoint();
-            //Debug.Log(item.transform.position);
-            inputPoints[i].position = item.transform.position;
-            i++;
+            var inputPoints = new ColorPoint[colliderScriptList.Count];
+            var i=0;
+            foreach(var item in colliderScriptList)
+            {
+                inputPoints[i] = new ColorPoint();
+                //Debug.Log(item.transform.position);
+                inputPoints[i].position = item.transform.position;
+                inputPoints[i].colorHSV.SetHSVFromRGB(item.particleType.color);
+                i++;
+            }
+            Interpolator.IDW(inputPoints, ref interpolationPoints);
+
+            //interpolationPoints[0].colorHSV.DebugHSV();
+            //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().r);
+            //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().g);
+            //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().b);
+            
+            interpolationObjects[0].GetComponent<Renderer>().material.color=interpolationPoints[0].colorHSV.GetRGBFromHSV();
         }
-        Interpolator.IDW(inputPoints, ref interpolationPoints);
-        interpolationPoints[0].colorHSV.DebugHSV();
     }
 }

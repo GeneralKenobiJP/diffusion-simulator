@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ColorHSV
 {
-    public float h; //[0,1] (normally [0,360])
+    public float h; //[0,360]
     public float s; //[0,1]
     public float v; //[0,1]
 
@@ -26,9 +26,34 @@ public class ColorHSV
         Color.RGBToHSV(rgb,out h,out s,out v);
     }
 
+    public void SetHSVFromRGB(byte r, byte g, byte b)
+    {
+        var rgb = new Color(r,g,b);
+        Color.RGBToHSV(rgb,out h,out s,out v);
+    }
+
+    public void SetHSVFromRGB(byte[] rgbBytes)
+    {
+        var rgb = new Color(rgbBytes[0],rgbBytes[1],rgbBytes[2]);
+        Color.RGBToHSV(rgb,out h,out s,out v);
+    }
+
+
     public void GetRGBFromHSV(out Color rgb)
     {
         rgb = Color.HSVToRGB(h,s,v);
+        rgb.r/=255f;
+        rgb.g/=255f;
+        rgb.b/=255f;
+    }
+
+    public Color GetRGBFromHSV()
+    {
+        var rgb = Color.HSVToRGB(h,s,v);
+        rgb.r/=255f;
+        rgb.g/=255f;
+        rgb.b/=255f;
+        return rgb;
     }
 
     public void DebugHSV()

@@ -31,8 +31,11 @@ public static class Interpolator
             var denominator = 0f;
             for(var i=0;i<distances.Length;i++)
             {
+                //inputPoints[i].colorHSV.DebugHSV();
                 var invertedDistance = InvertedDistanceAdjusted(distances[i]);
                 var iHSV = inputPoints[i].colorHSV*invertedDistance;
+                //iHSV.DebugHSV();
+                //Debug.Log(invertedDistance);
                 denominator += invertedDistance;
                 interpolatedHSV+=iHSV;
             }
