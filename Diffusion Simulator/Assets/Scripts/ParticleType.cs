@@ -1,3 +1,5 @@
+using UnityEngine;
+
 [System.Serializable]
 public class ParticleType
 {
@@ -9,6 +11,7 @@ public class ParticleType
     public float molarHeatCapacity;
     public string bondType;
     public float dipoleMoment;
-    public int[] colorGas;
-    public int[] color;
+    public byte[] colorGas;
+    public byte[] color;
+    public float normalDensity;
 }

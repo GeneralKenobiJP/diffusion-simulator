@@ -22,8 +22,9 @@ public class Setup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Destroy(GameObject.Find("Particle")); //TEMP
         var a = "water";
-        var b = "chlorine";
+        var b = "potassiumPermanganate";
         particleType.Add(a);
         particleType.Add(b);
         LoadSubstances();
@@ -43,8 +44,8 @@ public class Setup : MonoBehaviour
             Debug.Log(particleScript.particleType.color[1]);
             Debug.Log(particleScript.particleType.color[2]);*/
 
-            if(i==0)
-                StartCoroutine(DebugOneParticle(particleScript));
+            //if(i==0)
+                //StartCoroutine(DebugOneParticle(particleScript));
         }
 
         CylinderScatter(CalculationProbeObject);
@@ -107,9 +108,10 @@ public class Setup : MonoBehaviour
                     var obInst = Instantiate(obj);
                     obInst.transform.position = new Vector3(center.x+r*Mathf.Cos(ang),posY,center.z+r*Mathf.Sin(ang));
                     probeRadius = Mathf.Max(PROBE_RADIUS_MINIMUM,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION)/*distance between two points sharing r and having different angle*/);
-                    Debug.Log(probeRadius);
+                    //Debug.Log(probeRadius);
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
+                    obInst.GetComponent<CalculationProbe>().cylinderCenter=center;
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
 
@@ -167,11 +169,17 @@ public class Setup : MonoBehaviour
             j++;
         }
         script.particleType = substanceArray[j];
+        script.molarMass = SetMolarMass();
         script.mass = SetMass();
+        script.AssignColor();
 
         float SetMass()
         {
-            return script.molarMass; //as for now
+            return script.particleType.normalDensity/200f; //as for now
+        }
+        float SetMolarMass()
+        {
+            return script.particleType.molarMass/1000f;
         }
     }
 

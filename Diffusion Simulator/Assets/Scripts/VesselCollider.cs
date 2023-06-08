@@ -47,6 +47,7 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.tag = colTag;
         planeMeshCollider.convex = true;
+        Destroy(planeCollider.GetComponent<MeshRenderer>());
         // ###
         for(var i=2;i<=PRECISION;i++)
         {
@@ -61,6 +62,7 @@ public class VesselCollider : MonoBehaviour
             planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
             planeMeshCollider.convex = true;
             planeMeshCollider.tag = colTag;
+            Destroy(planeCollider.GetComponent<MeshRenderer>());
         }
 
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -70,6 +72,7 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
         planeMeshCollider.tag = colTag;
+        Destroy(planeCollider.GetComponent<MeshRenderer>());
 
         planeCollider = GameObject.CreatePrimitive(PrimitiveType.Plane);
         planeCollider.transform.position = center-new Vector3(0,height/2*scale,0);
@@ -77,6 +80,7 @@ public class VesselCollider : MonoBehaviour
         planeMeshCollider = planeCollider.GetComponent<MeshCollider>();
         planeMeshCollider.convex = true;
         planeMeshCollider.tag = colTag;
+        Destroy(planeCollider.GetComponent<MeshRenderer>());
     }
 
     private void SetupColliders()
