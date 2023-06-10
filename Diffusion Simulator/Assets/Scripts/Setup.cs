@@ -32,6 +32,10 @@ public class Setup : MonoBehaviour
         {
             var thisParticle = Instantiate(Particle);
             thisParticle.tag="Particle";
+            //Debug.Log(thisParticle.transform.position);
+            //Debug.Log(GeneratePosition().x);
+            //Debug.Log(GeneratePosition().y);
+            //Debug.Log(GeneratePosition().z);
             //var particleGraphics = thisParticle.GetComponent<MeshRenderer>();
             //Destroy(particleGraphics); //makes particles invisible; nice for performance, I hope (maybe not)
             particleScript = thisParticle.GetComponent<StandardBehaviour>();
@@ -193,5 +197,13 @@ public class Setup : MonoBehaviour
                 //Debug.Log(subItem.columnListHigher);
                 //Debug.Log(subItem.columnListLower);
             }
+    }
+
+    public static Vector3 GeneratePosition()
+    {
+        var x = UnityEngine.Random.Range(-0.4f,0.4f);
+        var y = UnityEngine.Random.Range(-0.95f,0.95f)+3.2f;
+        var z = 0.16f-x*x-7.53f;
+        return new Vector3(x,y,z);
     }
 }

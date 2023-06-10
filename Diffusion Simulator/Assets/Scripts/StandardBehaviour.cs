@@ -17,8 +17,10 @@ public class StandardBehaviour : MonoBehaviour
     private Collider thisCol;
     GameObject Cylinder;
     private float centerDistance; //(considering in XZ plane, then in OY axis) if it exceeds the radius of the cylinder, an emergency function gets it back inside
+    public float energyStored=0f;
 
     private double REFERENCE_MI; //300K
+    private const float RESTITUTION_COEF = 0.85f; //(0,1)
 
     private void SetVelocityStd()
     {
@@ -61,7 +63,8 @@ public class StandardBehaviour : MonoBehaviour
     {
         REFERENCE_MI=CalculateMi(300);
         this.transform.localScale=new Vector3(0.05f,0.05f,0.05f);
-        this.transform.position=new Vector3(0f, 3.2f, -7.53f);
+        //this.transform.position=new Vector3(0f, 3.2f, -7.53f);
+        this.transform.position = Setup.GeneratePosition();
         //mass=molarMass*PhysicalConst.uToKg;
         mi=CalculateMi(temperature);
         //mi=0f;
@@ -138,8 +141,8 @@ public class StandardBehaviour : MonoBehaviour
             normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
             ExtendedMath.ReflectVector(ref direction,normal);
             rigid.Sleep();
-        }
-        if(col.tag=="GuardVessel")
+        } //unused as for now, I think
+        else if(col.tag=="GuardVessel")
         {
             contactPoint = col.ClosestPoint(this.transform.position);
             normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
@@ -149,6 +152,12 @@ public class StandardBehaviour : MonoBehaviour
             this.transform.Translate(5f*dir*this.transform.localScale.x*Time.deltaTime);
             rigid.Sleep();
         }
+        else if(col.tag=="Particle")
+        {
+            CollideInelastic(col);
+            //Debug.Log("pow pow pow");
+        }
+
     }
 
     private void EmergencyTrigger()
@@ -160,6 +169,28 @@ public class StandardBehaviour : MonoBehaviour
     private void OnTriggerExit()
     {
         rigid.WakeUp();
+    }
+
+    private void CollideInelastic(Collider col) //calculating only for this particular particle (the other particle calls its own CollideInelastic() function)
+    {
+        var colScript = col.GetComponent<StandardBehaviour>();
+        var colMass = colScript.mass;
+        var colEnergyStored = colScript.energyStored;
+        var colDirection = colScript.GetDirectionVector();
+
+        colScript.energyStored-=colEnergyStored;
+
+        var newDir = new Vector3();
+        newDir = (colDirection-direction)*colMass+mass*direction+colMass*colDirection;
+        newDir /= (mass+colMass);
+        var frameEnergy = newDir.magnitude;
+        newDir *= RESTITUTION_COEF*(1f+colEnergyStored*RESTITUTION_COEF);
+
+        energyStored+=(frameEnergy-newDir.magnitude);
+
+        direction = newDir;
+
+        Debug.Log(energyStored);
     }
 
     public void ApplyForce(Vector3 force)
@@ -195,6 +226,11 @@ public class StandardBehaviour : MonoBehaviour
         //Debug.Log(particleType.color[2]);
         var thisMaterial = this.GetComponent<Renderer>().material;
         thisMaterial.color = new Color32(particleType.color[0],particleType.color[1],particleType.color[2],255);
+    }
+
+    public Vector3 GetDirectionVector()
+    {
+        return direction;
     }
 
     public void DebugDirection()
