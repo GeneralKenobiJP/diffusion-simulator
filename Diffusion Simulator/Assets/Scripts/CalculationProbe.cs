@@ -22,6 +22,8 @@ public class CalculationProbe : MonoBehaviour
     private GameObject[] interpolationObjects;
     private Material interpolationMaterial;
     public Vector3 cylinderCenter;
+    private const bool IS_VACUUM=false;
+    private const float OXYGEN_DENSITY=0.0012f;
     void Start()
     {
         interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
@@ -158,6 +160,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyPressure();
             ApplyCohesion();
             ApplyAdhesion();
+            ApplyGravity();
             InterpolateColor();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(cohesionForce[1]);
@@ -362,10 +365,14 @@ public class CalculationProbe : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        var gravityVectorTemp = new Vector3(0, -0.1f, 0);
+        var gravityVectorTemp = new Vector3(0, -10f, 0);
+        //gravityVectorTemp.y //g*m(1-ro/d), but later we divide by m anyway
         foreach (var item in colliderScriptList)
         {
-            var gravityVector = gravityVectorTemp * item.mass;
+            var gravityVector = gravityVectorTemp;
+            if(!IS_VACUUM)
+                gravityVector*=(1f-OXYGEN_DENSITY/item.particleType.normalDensity);
+            //Debug.Log(gravityVector.y);
             item.ApplyForce(gravityVector);
         }
     }

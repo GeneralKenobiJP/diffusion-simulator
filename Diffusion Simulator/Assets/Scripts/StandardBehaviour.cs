@@ -163,7 +163,10 @@ public class StandardBehaviour : MonoBehaviour
     private void EmergencyTrigger()
     {
         direction *= -1f;
-        this.transform.Translate(2f*direction*Time.deltaTime); //making sure it doesn't bounce back
+        if(!((this.transform.position-Cylinder.transform.position).magnitude>1.13f))
+            this.transform.Translate(2f*direction*Time.deltaTime); //making sure it doesn't bounce back
+        else
+            this.transform.position = Cylinder.transform.position; //rescue where all hope is lost, unbehaving little rascals
     }
 
     private void OnTriggerExit()
@@ -175,22 +178,24 @@ public class StandardBehaviour : MonoBehaviour
     {
         var colScript = col.GetComponent<StandardBehaviour>();
         var colMass = colScript.mass;
-        var colEnergyStored = colScript.energyStored;
+        var colEnergyStored = colScript.energyStored*RESTITUTION_COEF;
         var colDirection = colScript.GetDirectionVector();
 
         colScript.energyStored-=colEnergyStored;
+        if(colScript.energyStored<0f)
+            colScript.energyStored=0f;
 
         var newDir = new Vector3();
         newDir = (colDirection-direction)*colMass+mass*direction+colMass*colDirection;
         newDir /= (mass+colMass);
         var frameEnergy = newDir.magnitude;
-        newDir *= RESTITUTION_COEF*(1f+colEnergyStored*RESTITUTION_COEF);
+        newDir *= RESTITUTION_COEF*(1f+colEnergyStored);
 
         energyStored+=(frameEnergy-newDir.magnitude);
 
         direction = newDir;
 
-        Debug.Log(energyStored);
+        //Debug.Log(energyStored);
     }
 
     public void ApplyForce(Vector3 force)
