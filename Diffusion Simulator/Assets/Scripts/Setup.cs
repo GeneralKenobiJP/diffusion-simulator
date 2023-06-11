@@ -23,7 +23,7 @@ public class Setup : MonoBehaviour
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "water";
+        var a = "petroleum";
         var b = "potassiumPermanganate";
         particleType.Add(a);
         particleType.Add(b);
@@ -179,7 +179,13 @@ public class Setup : MonoBehaviour
 
         float SetMass()
         {
-            return script.particleType.normalDensity/200f; //as for now
+            var state = 1f;
+            if(temperature>script.particleType.boilingPoint)
+                state=0.001f;
+            else if (temperature>script.particleType.meltingPoint)
+                state=0.4f;
+            //else 1f is good
+            return script.particleType.normalDensity*state/200f; //as for now
         }
         float SetMolarMass()
         {

@@ -140,6 +140,8 @@ public class StandardBehaviour : MonoBehaviour
             contactPoint = col.ClosestPoint(this.transform.position);
             normal = GameObject.Find("Cylinder").GetComponent<VesselCollider>().CalculateNormal(contactPoint);
             ExtendedMath.ReflectVector(ref direction,normal);
+            if(direction.magnitude>4f)
+                direction.Normalize();
             rigid.Sleep();
         } //unused as for now, I think
         else if(col.tag=="GuardVessel")
@@ -166,7 +168,10 @@ public class StandardBehaviour : MonoBehaviour
         if(!((this.transform.position-Cylinder.transform.position).magnitude>1.13f))
             this.transform.Translate(2f*direction*Time.deltaTime); //making sure it doesn't bounce back
         else
+        {
             this.transform.position = Cylinder.transform.position; //rescue where all hope is lost, unbehaving little rascals
+            GenerateDirection();
+        }
     }
 
     private void OnTriggerExit()
@@ -201,7 +206,12 @@ public class StandardBehaviour : MonoBehaviour
     public void ApplyForce(Vector3 force)
     {
         direction += 0.001f*force*Time.deltaTime;
-        if(direction.magnitude>1f)
+        if(direction.magnitude>4f)
+        {
+            direction.Normalize();
+            direction*=0.5f;
+        }
+        else if(direction.magnitude>1f)
         {
             //direction.Normalize();
             direction*=0.6f;

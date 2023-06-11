@@ -24,6 +24,7 @@ public class CalculationProbe : MonoBehaviour
     public Vector3 cylinderCenter;
     private const bool IS_VACUUM=false;
     private const float OXYGEN_DENSITY=0.0012f;
+    private const float MAX_FORCE=8f;
     void Start()
     {
         interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
@@ -301,7 +302,7 @@ public class CalculationProbe : MonoBehaviour
                 thisForce[i] *= 3.5f;
             thisForce[i] *= Mathf.Sqrt(localMass[i]);
             thisForce[i] *= 0.2f;
-            cohesionForce[i] = thisForce[i];
+            cohesionForce[i] = Mathf.Min(thisForce[i],MAX_FORCE);
             //Debug.Log(cohesionForce[i]);
         }
         //Debug.Log(cohesionForce[0]);
@@ -321,7 +322,7 @@ public class CalculationProbe : MonoBehaviour
             thisForce[i]*=surfaceForce;
             thisForce[i]*=0.0001f*Mathf.Abs(substances[subNum[0]].molarMass-substances[subNum[1]].molarMass)*(localMass[subNum[0]]+localMass[subNum[1]]);
 
-            adhesionForce[i]=thisForce[i];
+            adhesionForce[i]=Mathf.Min(thisForce[i],MAX_FORCE);
         }
     }
     private void AddPressure()
