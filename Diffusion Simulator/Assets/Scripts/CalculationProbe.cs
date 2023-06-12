@@ -372,9 +372,11 @@ public class CalculationProbe : MonoBehaviour
         {
             var gravityVector = gravityVectorTemp;
             if(!IS_VACUUM)
-                gravityVector*=(1f-OXYGEN_DENSITY/item.particleType.normalDensity);
+                gravityVector*=(1f-OXYGEN_DENSITY/item.matterDensity);
             //Debug.Log(gravityVector.y);
             item.ApplyForce(gravityVector);
+            //if(item.particleType.type=="hydrogen")
+              //  Debug.Log(gravityVector.y);
         }
     }
 

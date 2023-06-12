@@ -18,12 +18,13 @@ public class Setup : MonoBehaviour
     private const int ANG_PROBE_PRECISION=4;
     private const int R_PROBE_PRECISION=2;
     private /*const*/ float PROBE_RADIUS_MINIMUM;
+    private const float MASS_SCALE_DOWN_FACTOR=200f;
 
     // Start is called before the first frame update
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "petroleum";
+        var a = "water";
         var b = "potassiumPermanganate";
         particleType.Add(a);
         particleType.Add(b);
@@ -185,7 +186,9 @@ public class Setup : MonoBehaviour
             else if (temperature>script.particleType.meltingPoint)
                 state=0.4f;
             //else 1f is good
-            return script.particleType.normalDensity*state/200f; //as for now
+            
+            script.matterDensity=state*script.particleType.normalDensity;
+            return script.matterDensity/MASS_SCALE_DOWN_FACTOR; //as for now
         }
         float SetMolarMass()
         {

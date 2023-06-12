@@ -18,9 +18,10 @@ public class StandardBehaviour : MonoBehaviour
     GameObject Cylinder;
     private float centerDistance; //(considering in XZ plane, then in OY axis) if it exceeds the radius of the cylinder, an emergency function gets it back inside
     public float energyStored=0f;
-
+    public float matterDensity=new float();
     private double REFERENCE_MI; //300K
     private const float RESTITUTION_COEF = 0.85f; //(0,1)
+    private const float INTERNAL_ENERGY_COEF = 0.92f; //(0,1)
 
     private void SetVelocityStd()
     {
@@ -186,6 +187,9 @@ public class StandardBehaviour : MonoBehaviour
         var colEnergyStored = colScript.energyStored*RESTITUTION_COEF;
         var colDirection = colScript.GetDirectionVector();
 
+        if(colEnergyStored>3f)
+            colEnergyStored=3f;
+
         colScript.energyStored-=colEnergyStored;
         if(colScript.energyStored<0f)
             colScript.energyStored=0f;
@@ -193,12 +197,16 @@ public class StandardBehaviour : MonoBehaviour
         var newDir = new Vector3();
         newDir = (colDirection-direction)*colMass+mass*direction+colMass*colDirection;
         newDir /= (mass+colMass);
+        newDir *= (1f+colEnergyStored)*INTERNAL_ENERGY_COEF;
         var frameEnergy = newDir.magnitude;
-        newDir *= RESTITUTION_COEF*(1f+colEnergyStored);
+        newDir *= RESTITUTION_COEF;
 
         energyStored+=(frameEnergy-newDir.magnitude);
 
         direction = newDir;
+
+        if(direction.magnitude>4f)
+            direction.Normalize();
 
         //Debug.Log(energyStored);
     }
