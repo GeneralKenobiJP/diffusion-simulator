@@ -82,6 +82,11 @@ public class StandardBehaviour : MonoBehaviour
 
         Cylinder = GameObject.Find("Cylinder");
 
+        if(temperature>particleType.boilingPoint)
+            StartCoroutine(GasMechanicsCheck()); //wow, this actually works great and as intended
+        else if(temperature>particleType.meltingPoint)
+            StartCoroutine(LiquidMechanicsCheck()); //this somewhat works
+
         //StartCoroutine(DebugRunTime());
 
         /*particleType = new ParticleType("Oxygen");
@@ -262,5 +267,46 @@ public class StandardBehaviour : MonoBehaviour
         //Debug.Log(direction.y);
         //Debug.Log(direction.z);
         Debug.Log(direction.magnitude);
+    }
+    /// STATE OF MATTER MECHANICS
+
+    /// GAS MECHANICS TO KEEP THEM GAS-Y
+    IEnumerator GasMechanicsCheck() //it's only called for gasses, so no need to check for it inside
+    {
+        var timeDelay = new WaitForSeconds(1f);
+
+        while (true)
+        {
+            if(direction.magnitude<0.2f && energyStored<1f)
+            {
+                direction*=2f;
+                energyStored+=1f;
+            }
+            yield return timeDelay;
+        }
+    }
+    /// LIQUID MECHANICS TO KEEP THEM LIQUID-Y
+    IEnumerator LiquidMechanicsCheck() //it's only called for liquids, so no need to check for it inside
+    {
+        var timeDelay = new WaitForSeconds(1f);
+
+        while(true)
+        {
+            if(direction.magnitude<0.2f && energyStored<1f)
+            {
+                var rand = UnityEngine.Random.Range(0f,1f);
+                if(rand>0.95f)
+                {
+                    direction.y+=0.2f;
+                    energyStored+=0.5f;
+                }
+                else
+                {
+                    direction.y-=0.15f;
+                    energyStored+=0.4f;
+                }
+            }
+            yield return timeDelay;
+        }
     }
 }
