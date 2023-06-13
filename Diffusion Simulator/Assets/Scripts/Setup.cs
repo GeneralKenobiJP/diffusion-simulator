@@ -24,7 +24,7 @@ public class Setup : MonoBehaviour
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "chlorine";
+        var a = "potassiumPermanganate";
         var b = "mercury";
         particleType.Add(a);
         particleType.Add(b);
@@ -117,6 +117,7 @@ public class Setup : MonoBehaviour
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
                     obInst.GetComponent<CalculationProbe>().cylinderCenter=center;
+                    obInst.GetComponent<CalculationProbe>().SetDistances(radius/R_PROBE_PRECISION,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION),height/Y_PROBE_PRECISION);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
 

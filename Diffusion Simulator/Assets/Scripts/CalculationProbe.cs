@@ -25,6 +25,9 @@ public class CalculationProbe : MonoBehaviour
     private const bool IS_VACUUM=false;
     private const float OXYGEN_DENSITY=0.0012f;
     private const float MAX_FORCE=8f;
+    private float radialDistance;
+    private float angularDistance;
+    private float heightDistance;
     void Start()
     {
         interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
@@ -419,7 +422,12 @@ public class CalculationProbe : MonoBehaviour
 
     /// INTERPOLATION SECTION ///
 
-
+    public void SetDistances(float straightDist, float angDist, float hghDist)
+    {
+        radialDistance = straightDist;
+        angularDistance = angDist;
+        heightDistance = hghDist;
+    }
     private void SetupInterpolationPoints()
     {
         interpolationPoints = new ColorPoint[1]; //CHANGE THIS
@@ -455,8 +463,17 @@ public class CalculationProbe : MonoBehaviour
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().r);
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().g);
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().b);
-            
-            interpolationObjects[0].GetComponent<Renderer>().material.color=interpolationPoints[0].colorHSV.GetRGBFromHSV();
+            for(var j=0;j<interpolationObjects.Length;j++)
+            {
+                interpolationObjects[j].transform.localScale = new Vector3(0.03f,0.03f,0.03f);
+                interpolationObjects[j].GetComponent<Renderer>().material.color=interpolationPoints[j].colorHSV.GetRGBFromHSV();
+            }
+        }
+        else
+        {
+            for(var j=0;j<interpolationObjects.Length;j++)
+                interpolationObjects[j].transform.localScale = new Vector3(0f,0f,0f);
+            //Debug.Log("le disappear");
         }
     }
 }
