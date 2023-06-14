@@ -26,9 +26,9 @@ public class CalculationProbe : MonoBehaviour
     private const float OXYGEN_DENSITY=0.0012f;
     private const float MAX_FORCE=8f;
     private float radialDistance;
-    private float angularDistance;
+    private float deltaAngle;
     private float heightDistance;
-    private const int INTERPOLATION_PRECISION=1; //unto how many segments we divide the abovementioned distances
+    private const int INTERPOLATION_PRECISION=3; //unto how many segments we divide the abovementioned distances
     //^3 = number of interpolationPoints/Objects
     void Start()
     {
@@ -426,9 +426,9 @@ public class CalculationProbe : MonoBehaviour
 
     public void SetDistances(float straightDist, float angDist, float hghDist)
     {
-        radialDistance = straightDist/2f; //we need to share space with neighbours
-        angularDistance = angDist/2f;
-        heightDistance = hghDist/2f;
+        radialDistance = straightDist/(2f*INTERPOLATION_PRECISION); //we need to share space with neighbours
+        deltaAngle = angDist/(2f*INTERPOLATION_PRECISION);
+        heightDistance = hghDist/(2f*INTERPOLATION_PRECISION);
     }
     private void SetupInterpolationPoints()
     {
@@ -453,11 +453,34 @@ public class CalculationProbe : MonoBehaviour
             var thisCenter = this.transform.position;
             //we also use:
             //float radialDistance;
-            //float angularDistance;
+            //float deltaAngle;
             //float heightDistance;
             //Vector3 cylinderCenter
 
             var radialVector = thisCenter-cylinderCenter;
+
+            var thisPosition = cylinderCenter+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
+            var thisVector = radialDistance*radialVector/radialVector.magnitude;
+            var n=0;
+            thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
+            for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
+            {
+                var startHeight = thisPosition.y;
+                for(var j=0;j<INTERPOLATION_PRECISION;j++) //height incrementation
+                {
+                    var startPosition = thisPosition;
+                    for(var k=0;k<INTERPOLATION_PRECISION;k++) //radius incrementation
+                    {
+                        interpolationPoints[n].position = thisPosition;
+                        thisPosition+=thisVector;
+                        n++;
+                    }
+                    thisPosition = startPosition;
+                    thisPosition.y+=heightDistance;
+                }
+                thisPosition.y=startHeight;
+                thisPosition = ExtendedMath.RotateVector2(thisPosition,deltaAngle,thisPosition.y);
+            }
         }
     }
     private void SetupInterpolationPointsTest()

@@ -21,6 +21,13 @@ public static class ExtendedMath
         //Currently considering only y=yPos
         return new Vector3(u.x*Mathf.Cos(angle)-u.z*Mathf.Sin(angle),yPos,u.x*Mathf.Sin(angle)+u.z*Mathf.Cos(angle));
     }
+    /*public static Vector3 RotateVector2AtPoint(Vector3 u, float angle, Vector3 Point)
+    {
+        var thisVector = u+Point;
+        thisVector = RotateVector2(thisVector,angle,u.y);
+        thisVector-=Point;
+        return thisVector;
+    }*/
     public static float RadToDeg(float radians)
     {
         return radians*180f/Mathf.PI;

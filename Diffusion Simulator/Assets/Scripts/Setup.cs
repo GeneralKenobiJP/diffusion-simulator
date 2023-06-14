@@ -117,7 +117,7 @@ public class Setup : MonoBehaviour
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
                     obInst.GetComponent<CalculationProbe>().cylinderCenter=center;
-                    obInst.GetComponent<CalculationProbe>().SetDistances(radius/R_PROBE_PRECISION,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION),height/Y_PROBE_PRECISION);
+                    obInst.GetComponent<CalculationProbe>().SetDistances(radius/R_PROBE_PRECISION,Mathf.PI*2f/ANG_PROBE_PRECISION,height/Y_PROBE_PRECISION);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
 
