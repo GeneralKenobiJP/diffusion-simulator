@@ -28,6 +28,8 @@ public class CalculationProbe : MonoBehaviour
     private float radialDistance;
     private float angularDistance;
     private float heightDistance;
+    private const int INTERPOLATION_PRECISION=1; //unto how many segments we divide the abovementioned distances
+    //^3 = number of interpolationPoints/Objects
     void Start()
     {
         interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
@@ -424,15 +426,48 @@ public class CalculationProbe : MonoBehaviour
 
     public void SetDistances(float straightDist, float angDist, float hghDist)
     {
-        radialDistance = straightDist;
-        angularDistance = angDist;
-        heightDistance = hghDist;
+        radialDistance = straightDist/2f; //we need to share space with neighbours
+        angularDistance = angDist/2f;
+        heightDistance = hghDist/2f;
     }
     private void SetupInterpolationPoints()
+    {
+        var objNum = INTERPOLATION_PRECISION*INTERPOLATION_PRECISION*INTERPOLATION_PRECISION;
+        interpolationPoints = new ColorPoint[objNum];
+        interpolationObjects = new GameObject[objNum];
+        for(var i=0;i<interpolationPoints.Length;i++)
+        {
+            interpolationPoints[i] = new ColorPoint();
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.localScale = new Vector3(0.03f,0.03f,0.03f);
+            //interpolationObjects[0] = new GameObject();
+            interpolationObjects[i] = cube;
+            interpolationObjects[i].GetComponent<Renderer>().material=interpolationMaterial;
+        }
+        ScatterPoints();
+        for(var i=0;i<interpolationObjects.Length;i++)
+            interpolationObjects[i].transform.position = interpolationPoints[i].position;
+
+        void ScatterPoints()
+        {
+            var thisCenter = this.transform.position;
+            //we also use:
+            //float radialDistance;
+            //float angularDistance;
+            //float heightDistance;
+            //Vector3 cylinderCenter
+
+            var radialVector = thisCenter-cylinderCenter;
+        }
+    }
+    private void SetupInterpolationPointsTest()
     {
         interpolationPoints = new ColorPoint[1]; //CHANGE THIS
         for(var i=0;i<interpolationPoints.Length;i++)
             interpolationPoints[i] = new ColorPoint();
+        Debug.Log(interpolationPoints[0].position.x);
+        Debug.Log(interpolationPoints[0].position.y);
+        Debug.Log(interpolationPoints[0].position.z);
         var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.position = this.transform.position;
         cube.transform.rotation = this.transform.rotation;
