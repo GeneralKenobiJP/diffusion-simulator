@@ -426,9 +426,9 @@ public class CalculationProbe : MonoBehaviour
 
     public void SetDistances(float straightDist, float angDist, float hghDist)
     {
-        radialDistance = straightDist/(2f*INTERPOLATION_PRECISION); //we need to share space with neighbours
-        deltaAngle = angDist/(2f*INTERPOLATION_PRECISION);
-        heightDistance = hghDist/(2f*INTERPOLATION_PRECISION);
+        radialDistance = straightDist/(INTERPOLATION_PRECISION); //we need to share space with neighbours
+        deltaAngle = angDist/(INTERPOLATION_PRECISION);
+        heightDistance = hghDist/(INTERPOLATION_PRECISION);
     }
     private void SetupInterpolationPoints()
     {
@@ -456,10 +456,10 @@ public class CalculationProbe : MonoBehaviour
             //float deltaAngle;
             //float heightDistance;
             //Vector3 cylinderCenter
+            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,thisCenter.y,cylinderCenter.z);
+            var radialVector = thisCenter-cylinderCenterAdjusted;
 
-            var radialVector = thisCenter-cylinderCenter;
-
-            var thisPosition = cylinderCenter+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
+            var thisPosition = cylinderCenterAdjusted+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
             var thisVector = radialDistance*radialVector/radialVector.magnitude;
             var n=0;
             thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
@@ -479,13 +479,14 @@ public class CalculationProbe : MonoBehaviour
                     thisPosition.y+=heightDistance;
                 }
                 thisPosition.y=startHeight;
-                thisPosition = ExtendedMath.RotateVector2(thisPosition,deltaAngle,thisPosition.y);
+                var thisCenterAdjusted = new Vector3(thisCenter.x,startHeight,thisCenter.z);
+                thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle,thisCenterAdjusted);
             }
         }
     }
     private void SetupInterpolationPointsTest()
     {
-        interpolationPoints = new ColorPoint[1]; //CHANGE THIS
+        interpolationPoints = new ColorPoint[1];
         for(var i=0;i<interpolationPoints.Length;i++)
             interpolationPoints[i] = new ColorPoint();
         Debug.Log(interpolationPoints[0].position.x);
