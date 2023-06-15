@@ -463,6 +463,7 @@ public class CalculationProbe : MonoBehaviour
             var thisVector = radialDistance*radialVector/radialVector.magnitude;
             var n=0;
             thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
+            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(thisCenter.x,thisPosition.y,thisCenter.z));
             for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
             {
                 var startHeight = thisPosition.y;
@@ -481,6 +482,7 @@ public class CalculationProbe : MonoBehaviour
                 thisPosition.y=startHeight;
                 var thisCenterAdjusted = new Vector3(thisCenter.x,startHeight,thisCenter.z);
                 thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle,thisCenterAdjusted);
+                thisVector = ExtendedMath.RotateVector2(thisVector,deltaAngle,thisVector.y);
             }
         }
     }
