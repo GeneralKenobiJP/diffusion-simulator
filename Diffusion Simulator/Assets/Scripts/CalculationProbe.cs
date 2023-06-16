@@ -167,7 +167,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyCohesion();
             ApplyAdhesion();
             ApplyGravity();
-            InterpolateColor();
+            //InterpolateColor();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(cohesionForce[1]);
             //Debug.Log(adhesionForce[0]);
@@ -447,6 +447,18 @@ public class CalculationProbe : MonoBehaviour
         ScatterPoints();
         for(var i=0;i<interpolationObjects.Length;i++)
             interpolationObjects[i].transform.position = interpolationPoints[i].position;
+        for(var i=0;i<interpolationObjects.Length;i++)
+        {
+            if((i/9)%3==0)
+            {
+                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(0f,0f,0f);
+            }
+            else if((i/9)%3==1)
+                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,0f,0f);
+            else
+                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,1f,1f);
+
+        }
 
         void ScatterPoints()
         {
@@ -463,7 +475,7 @@ public class CalculationProbe : MonoBehaviour
             var thisVector = radialDistance*radialVector/radialVector.magnitude;
             var n=0;
             thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
-            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(thisCenter.x,thisPosition.y,thisCenter.z));
+            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(thisCenter.x,thisPosition.y,thisCenter.z));
             for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
             {
                 var startHeight = thisPosition.y;
@@ -482,7 +494,7 @@ public class CalculationProbe : MonoBehaviour
                 thisPosition.y=startHeight;
                 var thisCenterAdjusted = new Vector3(thisCenter.x,startHeight,thisCenter.z);
                 thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle,thisCenterAdjusted);
-                thisVector = ExtendedMath.RotateVector2(thisVector,deltaAngle,thisVector.y);
+                thisVector = ExtendedMath.RotateVector2(thisVector,-deltaAngle,thisVector.y);
             }
         }
     }
