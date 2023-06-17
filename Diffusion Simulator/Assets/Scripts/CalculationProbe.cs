@@ -16,7 +16,6 @@ public class CalculationProbe : MonoBehaviour
     private float[] cohesionForce; //non-negative
     private float[] adhesionForce; //non-negative
     private Vector3[] massCenter; //array of centers of the masses of physical systems consisting of particular particle type (substance)
-    // Start is called before the first frame update
     private float temperature;
     private ColorPoint[] interpolationPoints;
     private GameObject[] interpolationObjects;
@@ -184,6 +183,7 @@ public class CalculationProbe : MonoBehaviour
         colliderScriptList = new List<StandardBehaviour>();
         var localMass = new float[substances.Count];
         CleanColliderScriptListSorted();
+        CleanMassCenter();
         if (colliderArray.Length > 0)
         {
             foreach (var item in colliderArray)
@@ -200,7 +200,13 @@ public class CalculationProbe : MonoBehaviour
                 }
             }
             AddPressure();
-            //FinalizeMass(localMass);
+            FinalizeMass();
+            /*for(var i=0;i<substances.Count;i++)
+            {
+            var temptemp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            temptemp.transform.position = massCenter[i];
+            temptemp.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+            }*/
             /*Debug.Log(massCenter[0].x);
             Debug.Log(massCenter[0].y);
             Debug.Log(massCenter[0].z);
@@ -212,9 +218,12 @@ public class CalculationProbe : MonoBehaviour
         }
     }
 
-    void InitializeMassCenter()
+    void CleanMassCenter()
     {
-
+        for (var i = 0; i < substances.Count; i++)
+        {
+            massCenter[i] = new Vector3(0f, 0f, 0f);
+        }
     }
 
     private int GetSubstanceNum(Collider collider)
@@ -285,14 +294,14 @@ public class CalculationProbe : MonoBehaviour
     private void AddToMass(Collider thisParticle, int substanceNum, ref float localMass)
     {
         var thisMass = thisParticle.GetComponent<StandardBehaviour>().mass; //actually the masses do not matter (m/m)
-        massCenter[substanceNum] = thisParticle.transform.position;
+        massCenter[substanceNum] += thisParticle.transform.position;
         localMass += thisMass;
     }
-    private void FinalizeMass(float[] localMass) //unneeded
+    private void FinalizeMass()
     {
         for (var i = 0; i < substances.Count; i++)
         {
-            massCenter[i] /= localMass[i];
+            massCenter[i] /= colliderScriptListSortedForSubstances[i].Count;
         }
     }
     private void AddCohesion(float[] localMass)
@@ -371,7 +380,7 @@ public class CalculationProbe : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        var gravityVectorTemp = new Vector3(0, -10f, 0);
+        var gravityVectorTemp = new Vector3(0, -20f, 0);
         //gravityVectorTemp.y //g*m(1-ro/d), but later we divide by m anyway
         foreach (var item in colliderScriptList)
         {
@@ -468,14 +477,14 @@ public class CalculationProbe : MonoBehaviour
             //float deltaAngle;
             //float heightDistance;
             //Vector3 cylinderCenter
-            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,thisCenter.y,cylinderCenter.z);
+            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,cylinderCenter.y,cylinderCenter.z);
             var radialVector = thisCenter-cylinderCenterAdjusted;
 
             var thisPosition = cylinderCenterAdjusted+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
             var thisVector = radialDistance*radialVector/radialVector.magnitude;
             var n=0;
             thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
-            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(thisCenter.x,thisPosition.y,thisCenter.z));
+            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(cylinderCenter.x,thisPosition.y,cylinderCenter.z));
             for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
             {
                 var startHeight = thisPosition.y;
@@ -492,9 +501,9 @@ public class CalculationProbe : MonoBehaviour
                     thisPosition.y+=heightDistance;
                 }
                 thisPosition.y=startHeight;
-                var thisCenterAdjusted = new Vector3(thisCenter.x,startHeight,thisCenter.z);
+                var thisCenterAdjusted = new Vector3(cylinderCenter.x,startHeight,cylinderCenter.z);
                 thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle,thisCenterAdjusted);
-                thisVector = ExtendedMath.RotateVector2(thisVector,-deltaAngle,thisVector.y);
+                thisVector = ExtendedMath.RotateVector2(thisVector,deltaAngle,thisVector.y);
             }
         }
     }

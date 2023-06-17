@@ -136,6 +136,8 @@ public class Setup : MonoBehaviour
             }
             //var obInstant = Instantiate(obj);
             //obInstant.transform.position = new Vector3(center.x,posY,center.z);
+            var tempObj = Instantiate(obj);
+            tempObj.transform.position = center;
         }
     }
 
