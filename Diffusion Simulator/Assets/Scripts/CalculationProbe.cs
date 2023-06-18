@@ -166,7 +166,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyCohesion();
             ApplyAdhesion();
             ApplyGravity();
-            //InterpolateColor();
+            InterpolateColor();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(cohesionForce[1]);
             //Debug.Log(adhesionForce[0]);
@@ -456,17 +456,21 @@ public class CalculationProbe : MonoBehaviour
         ScatterPoints();
         for(var i=0;i<interpolationObjects.Length;i++)
             interpolationObjects[i].transform.position = interpolationPoints[i].position;
-        for(var i=0;i<interpolationObjects.Length;i++)
-        {
-            if((i/9)%3==0)
-            {
-                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(0f,0f,0f);
-            }
-            else if((i/9)%3==1)
-                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,0f,0f);
-            else
-                interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,1f,1f);
 
+        void ColorInterpolationPoints() //test&debugging function
+        {
+            for(var i=0;i<interpolationObjects.Length;i++)
+            {
+                if((i/9)%3==0)
+                {
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(0f,0f,0f);
+                }
+                else if((i/9)%3==1)
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,0f,0f);
+                else
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,1f,1f);
+
+            }
         }
 
         void ScatterPoints()
@@ -477,7 +481,7 @@ public class CalculationProbe : MonoBehaviour
             //float deltaAngle;
             //float heightDistance;
             //Vector3 cylinderCenter
-            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,cylinderCenter.y,cylinderCenter.z);
+            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,thisCenter.y,cylinderCenter.z);
             var radialVector = thisCenter-cylinderCenterAdjusted;
 
             var thisPosition = cylinderCenterAdjusted+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
@@ -485,6 +489,7 @@ public class CalculationProbe : MonoBehaviour
             var n=0;
             thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
             thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(cylinderCenter.x,thisPosition.y,cylinderCenter.z));
+            thisVector = ExtendedMath.RotateVector2(thisVector,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,thisVector.y);
             for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
             {
                 var startHeight = thisPosition.y;

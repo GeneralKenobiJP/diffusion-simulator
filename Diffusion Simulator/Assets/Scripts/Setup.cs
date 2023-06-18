@@ -24,8 +24,8 @@ public class Setup : MonoBehaviour
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "potassiumPermanganate";
-        var b = "mercury";
+        var a = "chlorine";
+        var b = "water";
         particleType.Add(a);
         particleType.Add(b);
         LoadSubstances();
@@ -180,6 +180,7 @@ public class Setup : MonoBehaviour
         script.molarMass = SetMolarMass();
         script.mass = SetMass();
         script.AssignColor();
+        Destroy(script.GetComponent<MeshRenderer>());
 
         float SetMass()
         {
