@@ -16,12 +16,19 @@ public class CalculationProbe : MonoBehaviour
     private float[] cohesionForce; //non-negative
     private float[] adhesionForce; //non-negative
     private Vector3[] massCenter; //array of centers of the masses of physical systems consisting of particular particle type (substance)
-    // Start is called before the first frame update
     private float temperature;
     private ColorPoint[] interpolationPoints;
     private GameObject[] interpolationObjects;
     private Material interpolationMaterial;
     public Vector3 cylinderCenter;
+    private const bool IS_VACUUM=false;
+    private const float OXYGEN_DENSITY=0.0012f;
+    private const float MAX_FORCE=8f;
+    private float radialDistance;
+    private float deltaAngle;
+    private float heightDistance;
+    private const int INTERPOLATION_PRECISION=3; //unto how many segments we divide the abovementioned distances
+    //^3 = number of interpolationPoints/Objects
     void Start()
     {
         interpolationMaterial = Resources.Load("Materials/Particle.mat", typeof(Material)) as Material;
@@ -158,6 +165,7 @@ public class CalculationProbe : MonoBehaviour
             ApplyPressure();
             ApplyCohesion();
             ApplyAdhesion();
+            ApplyGravity();
             InterpolateColor();
             //Debug.Log(cohesionForce[0]);
             //Debug.Log(cohesionForce[1]);
@@ -175,6 +183,7 @@ public class CalculationProbe : MonoBehaviour
         colliderScriptList = new List<StandardBehaviour>();
         var localMass = new float[substances.Count];
         CleanColliderScriptListSorted();
+        CleanMassCenter();
         if (colliderArray.Length > 0)
         {
             foreach (var item in colliderArray)
@@ -191,7 +200,13 @@ public class CalculationProbe : MonoBehaviour
                 }
             }
             AddPressure();
-            //FinalizeMass(localMass);
+            FinalizeMass();
+            /*for(var i=0;i<substances.Count;i++)
+            {
+            var temptemp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            temptemp.transform.position = massCenter[i];
+            temptemp.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+            }*/
             /*Debug.Log(massCenter[0].x);
             Debug.Log(massCenter[0].y);
             Debug.Log(massCenter[0].z);
@@ -203,9 +218,12 @@ public class CalculationProbe : MonoBehaviour
         }
     }
 
-    void InitializeMassCenter()
+    void CleanMassCenter()
     {
-
+        for (var i = 0; i < substances.Count; i++)
+        {
+            massCenter[i] = new Vector3(0f, 0f, 0f);
+        }
     }
 
     private int GetSubstanceNum(Collider collider)
@@ -276,14 +294,14 @@ public class CalculationProbe : MonoBehaviour
     private void AddToMass(Collider thisParticle, int substanceNum, ref float localMass)
     {
         var thisMass = thisParticle.GetComponent<StandardBehaviour>().mass; //actually the masses do not matter (m/m)
-        massCenter[substanceNum] = thisParticle.transform.position;
+        massCenter[substanceNum] += thisParticle.transform.position;
         localMass += thisMass;
     }
-    private void FinalizeMass(float[] localMass) //unneeded
+    private void FinalizeMass()
     {
         for (var i = 0; i < substances.Count; i++)
         {
-            massCenter[i] /= localMass[i];
+            massCenter[i] /= colliderScriptListSortedForSubstances[i].Count;
         }
     }
     private void AddCohesion(float[] localMass)
@@ -298,7 +316,7 @@ public class CalculationProbe : MonoBehaviour
                 thisForce[i] *= 3.5f;
             thisForce[i] *= Mathf.Sqrt(localMass[i]);
             thisForce[i] *= 0.2f;
-            cohesionForce[i] = thisForce[i];
+            cohesionForce[i] = Mathf.Min(thisForce[i],MAX_FORCE);
             //Debug.Log(cohesionForce[i]);
         }
         //Debug.Log(cohesionForce[0]);
@@ -318,7 +336,7 @@ public class CalculationProbe : MonoBehaviour
             thisForce[i]*=surfaceForce;
             thisForce[i]*=0.0001f*Mathf.Abs(substances[subNum[0]].molarMass-substances[subNum[1]].molarMass)*(localMass[subNum[0]]+localMass[subNum[1]]);
 
-            adhesionForce[i]=thisForce[i];
+            adhesionForce[i]=Mathf.Min(thisForce[i],MAX_FORCE);
         }
     }
     private void AddPressure()
@@ -362,11 +380,17 @@ public class CalculationProbe : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        var gravityVectorTemp = new Vector3(0, -0.1f, 0);
+        var gravityVectorTemp = new Vector3(0, -20f, 0);
+        //gravityVectorTemp.y //g*m(1-ro/d), but later we divide by m anyway
         foreach (var item in colliderScriptList)
         {
-            var gravityVector = gravityVectorTemp * item.mass;
+            var gravityVector = gravityVectorTemp;
+            if(!IS_VACUUM)
+                gravityVector*=(1f-OXYGEN_DENSITY/item.matterDensity);
+            //Debug.Log(gravityVector.y);
             item.ApplyForce(gravityVector);
+            //if(item.particleType.type=="hydrogen")
+              //  Debug.Log(gravityVector.y);
         }
     }
 
@@ -409,12 +433,93 @@ public class CalculationProbe : MonoBehaviour
 
     /// INTERPOLATION SECTION ///
 
-
+    public void SetDistances(float straightDist, float angDist, float hghDist)
+    {
+        radialDistance = straightDist/(INTERPOLATION_PRECISION); //we need to share space with neighbours
+        deltaAngle = angDist/(INTERPOLATION_PRECISION);
+        heightDistance = hghDist/(INTERPOLATION_PRECISION);
+    }
     private void SetupInterpolationPoints()
     {
-        interpolationPoints = new ColorPoint[1]; //CHANGE THIS
+        var objNum = INTERPOLATION_PRECISION*INTERPOLATION_PRECISION*INTERPOLATION_PRECISION;
+        interpolationPoints = new ColorPoint[objNum];
+        interpolationObjects = new GameObject[objNum];
+        for(var i=0;i<interpolationPoints.Length;i++)
+        {
+            interpolationPoints[i] = new ColorPoint();
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.localScale = new Vector3(0.03f,0.03f,0.03f);
+            //interpolationObjects[0] = new GameObject();
+            interpolationObjects[i] = cube;
+            interpolationObjects[i].GetComponent<Renderer>().material=interpolationMaterial;
+        }
+        ScatterPoints();
+        for(var i=0;i<interpolationObjects.Length;i++)
+            interpolationObjects[i].transform.position = interpolationPoints[i].position;
+
+        void ColorInterpolationPoints() //test&debugging function
+        {
+            for(var i=0;i<interpolationObjects.Length;i++)
+            {
+                if((i/9)%3==0)
+                {
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(0f,0f,0f);
+                }
+                else if((i/9)%3==1)
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,0f,0f);
+                else
+                    interpolationObjects[i].GetComponent<Renderer>().material.color=new Color(1f,1f,1f);
+
+            }
+        }
+
+        void ScatterPoints()
+        {
+            var thisCenter = this.transform.position;
+            //we also use:
+            //float radialDistance;
+            //float deltaAngle;
+            //float heightDistance;
+            //Vector3 cylinderCenter
+            var cylinderCenterAdjusted = new Vector3(cylinderCenter.x,thisCenter.y,cylinderCenter.z);
+            var radialVector = thisCenter-cylinderCenterAdjusted;
+
+            var thisPosition = cylinderCenterAdjusted+radialVector*((radialVector.magnitude-0.5f*INTERPOLATION_PRECISION*radialDistance)/radialVector.magnitude);
+            var thisVector = radialDistance*radialVector/radialVector.magnitude;
+            var n=0;
+            thisPosition.y-=heightDistance*0.5f*INTERPOLATION_PRECISION;
+            thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,new Vector3(cylinderCenter.x,thisPosition.y,cylinderCenter.z));
+            thisVector = ExtendedMath.RotateVector2(thisVector,-1f*deltaAngle*0.5f*INTERPOLATION_PRECISION,thisVector.y);
+            for(var i=0;i<INTERPOLATION_PRECISION;i++) //angle incrementation
+            {
+                var startHeight = thisPosition.y;
+                for(var j=0;j<INTERPOLATION_PRECISION;j++) //height incrementation
+                {
+                    var startPosition = thisPosition;
+                    for(var k=0;k<INTERPOLATION_PRECISION;k++) //radius incrementation
+                    {
+                        interpolationPoints[n].position = thisPosition;
+                        thisPosition+=thisVector;
+                        n++;
+                    }
+                    thisPosition = startPosition;
+                    thisPosition.y+=heightDistance;
+                }
+                thisPosition.y=startHeight;
+                var thisCenterAdjusted = new Vector3(cylinderCenter.x,startHeight,cylinderCenter.z);
+                thisPosition = ExtendedMath.RotateVector2AtPoint(thisPosition,deltaAngle,thisCenterAdjusted);
+                thisVector = ExtendedMath.RotateVector2(thisVector,deltaAngle,thisVector.y);
+            }
+        }
+    }
+    private void SetupInterpolationPointsTest()
+    {
+        interpolationPoints = new ColorPoint[1];
         for(var i=0;i<interpolationPoints.Length;i++)
             interpolationPoints[i] = new ColorPoint();
+        Debug.Log(interpolationPoints[0].position.x);
+        Debug.Log(interpolationPoints[0].position.y);
+        Debug.Log(interpolationPoints[0].position.z);
         var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.position = this.transform.position;
         cube.transform.rotation = this.transform.rotation;
@@ -445,8 +550,17 @@ public class CalculationProbe : MonoBehaviour
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().r);
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().g);
             //Debug.Log(interpolationPoints[0].colorHSV.GetRGBFromHSV().b);
-            
-            interpolationObjects[0].GetComponent<Renderer>().material.color=interpolationPoints[0].colorHSV.GetRGBFromHSV();
+            for(var j=0;j<interpolationObjects.Length;j++)
+            {
+                interpolationObjects[j].transform.localScale = new Vector3(0.03f,0.03f,0.03f);
+                interpolationObjects[j].GetComponent<Renderer>().material.color=interpolationPoints[j].colorHSV.GetRGBFromHSV();
+            }
+        }
+        else
+        {
+            for(var j=0;j<interpolationObjects.Length;j++)
+                interpolationObjects[j].transform.localScale = new Vector3(0f,0f,0f);
+            //Debug.Log("le disappear");
         }
     }
 }

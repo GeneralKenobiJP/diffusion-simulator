@@ -18,13 +18,14 @@ public class Setup : MonoBehaviour
     private const int ANG_PROBE_PRECISION=4;
     private const int R_PROBE_PRECISION=2;
     private /*const*/ float PROBE_RADIUS_MINIMUM;
+    private const float MASS_SCALE_DOWN_FACTOR=200f;
 
     // Start is called before the first frame update
     void Start()
     {
         Destroy(GameObject.Find("Particle")); //TEMP
-        var a = "water";
-        var b = "potassiumPermanganate";
+        var a = "chlorine";
+        var b = "water";
         particleType.Add(a);
         particleType.Add(b);
         LoadSubstances();
@@ -32,6 +33,10 @@ public class Setup : MonoBehaviour
         {
             var thisParticle = Instantiate(Particle);
             thisParticle.tag="Particle";
+            //Debug.Log(thisParticle.transform.position);
+            //Debug.Log(GeneratePosition().x);
+            //Debug.Log(GeneratePosition().y);
+            //Debug.Log(GeneratePosition().z);
             //var particleGraphics = thisParticle.GetComponent<MeshRenderer>();
             //Destroy(particleGraphics); //makes particles invisible; nice for performance, I hope (maybe not)
             particleScript = thisParticle.GetComponent<StandardBehaviour>();
@@ -112,6 +117,7 @@ public class Setup : MonoBehaviour
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
                     obInst.GetComponent<CalculationProbe>().cylinderCenter=center;
+                    obInst.GetComponent<CalculationProbe>().SetDistances(radius/R_PROBE_PRECISION,Mathf.PI*2f/ANG_PROBE_PRECISION,height/Y_PROBE_PRECISION);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[0].type);
                     //Debug.Log(obInst.GetComponent<CalculationProbe>().substances[1].type);
 
@@ -130,6 +136,8 @@ public class Setup : MonoBehaviour
             }
             //var obInstant = Instantiate(obj);
             //obInstant.transform.position = new Vector3(center.x,posY,center.z);
+            var tempObj = Instantiate(obj);
+            tempObj.transform.position = center;
         }
     }
 
@@ -172,10 +180,19 @@ public class Setup : MonoBehaviour
         script.molarMass = SetMolarMass();
         script.mass = SetMass();
         script.AssignColor();
+        Destroy(script.GetComponent<MeshRenderer>());
 
         float SetMass()
         {
-            return script.particleType.normalDensity/200f; //as for now
+            var state = 1f;
+            if(temperature>script.particleType.boilingPoint)
+                state=0.001f;
+            else if (temperature>script.particleType.meltingPoint)
+                state=0.4f;
+            //else 1f is good
+            
+            script.matterDensity=state*script.particleType.normalDensity;
+            return script.matterDensity/MASS_SCALE_DOWN_FACTOR; //as for now
         }
         float SetMolarMass()
         {
@@ -193,5 +210,13 @@ public class Setup : MonoBehaviour
                 //Debug.Log(subItem.columnListHigher);
                 //Debug.Log(subItem.columnListLower);
             }
+    }
+
+    public static Vector3 GeneratePosition()
+    {
+        var x = UnityEngine.Random.Range(-0.4f,0.4f);
+        var y = UnityEngine.Random.Range(-0.95f,0.95f)+3.2f;
+        var z = 0.16f-x*x-7.53f;
+        return new Vector3(x,y,z);
     }
 }

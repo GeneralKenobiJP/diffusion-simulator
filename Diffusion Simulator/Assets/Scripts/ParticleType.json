@@ -17,8 +17,8 @@
     {
     "type": "water",
     "molarMass": 18,
-    "meltingPoint": 0,
-    "boilingPoint": 100,
+    "meltingPoint": 273,
+    "boilingPoint": 373,
     "molarHeatCapacity": 75.358,
     "bondType": "polar covalent",
     "dipoleMoment": 1.8546,
@@ -30,8 +30,8 @@
     {
     "type": "waterDye",
     "molarMass": 20,
-    "meltingPoint": 0,
-    "boilingPoint": 100,
+    "meltingPoint": 273,
+    "boilingPoint": 373,
     "molarHeatCapacity": 70,
     "bondType": "polar covalent",
     "dipoleMoment": 1.7,
@@ -122,8 +122,8 @@
     {
         "type": "blood",
         "molarMass": 20,
-        "meltingPoint": 0,
-        "boilingPoint": 100,
+        "meltingPoint": 273,
+        "boilingPoint": 373,
         "molarHeatCapacity": 70,
         "bondType": "polar covalent",
         "dipoleMoment": 1.9,
@@ -135,8 +135,8 @@
     {
         "type": "urine",
         "molarMass": 20,
-        "meltingPoint": 0,
-        "boilingPoint": 100,
+        "meltingPoint": 273,
+        "boilingPoint": 373,
         "molarHeatCapacity": 70,
         "bondType": "polar covalent",
         "dipoleMoment": 1.8,
