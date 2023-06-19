@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Setup : MonoBehaviour
 {
@@ -56,6 +57,8 @@ public class Setup : MonoBehaviour
         CylinderScatter(CalculationProbeObject);
 
         DistributeColumnLists();
+
+        LoadUI();
 
     }
 
@@ -218,5 +221,12 @@ public class Setup : MonoBehaviour
         var y = UnityEngine.Random.Range(-0.95f,0.95f)+3.2f;
         var z = 0.16f-x*x-7.53f;
         return new Vector3(x,y,z);
+    }
+
+    private void LoadUI()
+    {
+        var dropdownScript = GameObject.Find("Dropdown A").GetComponent<DropdownHandler>();
+        dropdownScript.thisOptions = particleType;
+        
     }
 }
