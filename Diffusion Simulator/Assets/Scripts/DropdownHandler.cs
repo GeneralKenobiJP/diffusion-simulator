@@ -28,13 +28,6 @@ public class DropdownHandler : MonoBehaviour
         dropdown.AddOptions(thisOptions);
     }
 
-    private void LabelItemSelected()
-    {
-        var index = dropdown.value;
-        text.text = dropdown.options[index].text;
-        Debug.Log(text.text);
-    }
-
     // Update is called once per frame
     void Update()
     {
