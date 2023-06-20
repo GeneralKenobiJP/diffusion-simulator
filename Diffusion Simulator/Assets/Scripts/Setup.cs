@@ -225,8 +225,18 @@ public class Setup : MonoBehaviour
 
     private void LoadUI()
     {
+        var particleList = jsonSerializer.FromJson();
+        var particleNameList = new List<string>();
+        foreach(var item in particleList)
+        {
+            particleNameList.Add(item.type);
+        }
         var dropdownScript = GameObject.Find("Dropdown A").GetComponent<DropdownHandler>();
-        dropdownScript.thisOptions = particleType;
-        
+        dropdownScript.thisOptions = particleNameList;
+        dropdownScript.Initialize();
+
+        dropdownScript = GameObject.Find("Dropdown B").GetComponent<DropdownHandler>();
+        dropdownScript.thisOptions = particleNameList;
+        dropdownScript.Initialize();
     }
 }

@@ -39,7 +39,7 @@ public class CalculationProbe : MonoBehaviour
         //Debug.Log(cohesionForceComponent[0]);
         //Debug.Log(cohesionForceComponent[1]);
         Probe();
-        StartCoroutine(Compute());
+        //StartCoroutine(Compute());
     }
 
     private void SetupForces()

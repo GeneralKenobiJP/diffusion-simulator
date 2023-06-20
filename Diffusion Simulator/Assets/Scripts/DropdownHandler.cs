@@ -14,19 +14,19 @@ public class DropdownHandler : MonoBehaviour
     public Text text;
     void Start()
     {
+        Initialize();
+
+        //LabelItemSelected();
+        //dropdown.onValueChanged.AddListener(delegate {LabelItemSelected();});
+    }
+    public void Initialize()
+    {
         dropdown = transform.GetComponent<Dropdown>();
         
         dropdown.options.Clear();
 
-        foreach(var item in thisOptions)
-        {
-            dropdown.options.Add(new Dropdown.OptionData(){text = item});
-        }
-
-        LabelItemSelected();
-        dropdown.onValueChanged.AddListener(delegate {LabelItemSelected();});
+        dropdown.AddOptions(thisOptions);
     }
-
 
     private void LabelItemSelected()
     {
