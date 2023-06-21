@@ -39,7 +39,13 @@ public class CalculationProbe : MonoBehaviour
         //Debug.Log(cohesionForceComponent[0]);
         //Debug.Log(cohesionForceComponent[1]);
         Probe();
-        //StartCoroutine(Compute());
+        StartCoroutine(Compute());
+    }
+
+    public void ReInitialize()
+    {
+        temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
+        SetupForces();
     }
 
     private void SetupForces()

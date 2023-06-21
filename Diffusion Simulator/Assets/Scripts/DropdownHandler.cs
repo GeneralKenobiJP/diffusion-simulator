@@ -12,6 +12,9 @@ public class DropdownHandler : MonoBehaviour
     public List<string> thisOptions;
     private Dropdown dropdown;
     public Text text;
+    private bool isBottom; //checks if it is a dropdown B
+    public Button button;
+    private ButtonHandler buttonHandler;
     void Start()
     {
         Initialize();
@@ -26,6 +29,22 @@ public class DropdownHandler : MonoBehaviour
         dropdown.options.Clear();
 
         dropdown.AddOptions(thisOptions);
+
+        if(this.name=="Dropdown B")
+            isBottom = true;
+        else
+            isBottom = false;
+
+        buttonHandler = button.GetComponent<ButtonHandler>();
+    }
+
+    public void SelectParticle()
+    {
+        var index = dropdown.value;
+        var particle = dropdown.options[index].text;
+        Debug.Log("Le select: " + particle);
+        //GameObject.Find("Setup").GetComponent<Setup>().ReInitialize(particleA,particleB);
+        buttonHandler.UpdateParticleSelection(particle,isBottom);
     }
 
     // Update is called once per frame

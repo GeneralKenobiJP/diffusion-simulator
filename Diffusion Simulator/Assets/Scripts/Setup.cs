@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Setup : MonoBehaviour
 {
-    private const int NUM_PARTICLES = 400;
-    private int[] numParticles={200,200};
+    private const int NUM_PARTICLES = 200;
+    private int[] numParticles={100,100};
     public List<ParticleType> substanceArray;
     public List<CalculationColumn> calculationColumns = new List<CalculationColumn>();
     public GameObject Particle;
@@ -60,6 +60,31 @@ public class Setup : MonoBehaviour
 
         LoadUI();
 
+    }
+
+    public void ReInitialize(string a, string b, float temp)
+    {
+        temperature = temp;
+        particleType = new List<string>();
+        particleType.Add(a);
+        particleType.Add(b);
+        LoadSubstances();
+        var destroyParticle = GameObject.FindGameObjectsWithTag("Particle");
+        for(var i=0;i<NUM_PARTICLES;i++)
+        {
+            Destroy(destroyParticle[i]);
+            var thisParticle = Instantiate(Particle);
+            thisParticle.tag="Particle";
+            particleScript = thisParticle.GetComponent<StandardBehaviour>();
+            particleScript.temperature=temperature;
+            AssignSubstances(particleScript, i);
+        }
+
+        var CalculatinProbeList = GameObject.FindObjectsOfType<CalculationProbe>();
+        foreach(var item in CalculatinProbeList)
+        {
+            item.ReInitialize();
+        }
     }
 
     IEnumerator DebugOneParticle(StandardBehaviour obj)
@@ -146,6 +171,7 @@ public class Setup : MonoBehaviour
 
     public void LoadSubstances()
     {
+        substanceArray = new List<ParticleType>();
         var i=0;
         Debug.Log(particleType);
         foreach(string item in particleType)
