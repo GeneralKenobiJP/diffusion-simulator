@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Setup : MonoBehaviour
 {
-    private const int NUM_PARTICLES = 400;
-    private int[] numParticles={200,200};
+    private const int NUM_PARTICLES = 200;
+    private int[] numParticles={100,100};
     public List<ParticleType> substanceArray;
     public List<CalculationColumn> calculationColumns = new List<CalculationColumn>();
     public GameObject Particle;
@@ -19,6 +20,8 @@ public class Setup : MonoBehaviour
     private const int R_PROBE_PRECISION=2;
     private /*const*/ float PROBE_RADIUS_MINIMUM;
     private const float MASS_SCALE_DOWN_FACTOR=200f;
+
+    private const float PROBING_ADJUSTMENT=0.9f; //adjustment factor for probeRadius of calculaionProbes, serves as an optimization feature
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +60,33 @@ public class Setup : MonoBehaviour
 
         DistributeColumnLists();
 
+        LoadUI();
+
+    }
+
+    public void ReInitialize(string a, string b, float temp)
+    {
+        temperature = temp;
+        particleType = new List<string>();
+        particleType.Add(a);
+        particleType.Add(b);
+        LoadSubstances();
+        var destroyParticle = GameObject.FindGameObjectsWithTag("Particle");
+        for(var i=0;i<NUM_PARTICLES;i++)
+        {
+            Destroy(destroyParticle[i]);
+            var thisParticle = Instantiate(Particle);
+            thisParticle.tag="Particle";
+            particleScript = thisParticle.GetComponent<StandardBehaviour>();
+            particleScript.temperature=temperature;
+            AssignSubstances(particleScript, i);
+        }
+
+        var CalculatinProbeList = GameObject.FindObjectsOfType<CalculationProbe>();
+        foreach(var item in CalculatinProbeList)
+        {
+            item.ReInitialize();
+        }
     }
 
     IEnumerator DebugOneParticle(StandardBehaviour obj)
@@ -112,7 +142,7 @@ public class Setup : MonoBehaviour
                 {
                     var obInst = Instantiate(obj);
                     obInst.transform.position = new Vector3(center.x+r*Mathf.Cos(ang),posY,center.z+r*Mathf.Sin(ang));
-                    probeRadius = Mathf.Max(PROBE_RADIUS_MINIMUM,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION)/*distance between two points sharing r and having different angle*/);
+                    probeRadius = Mathf.Max(PROBE_RADIUS_MINIMUM,2f*radius/R_PROBE_PRECISION*Mathf.Sin(2f*Mathf.PI/ANG_PROBE_PRECISION)*PROBING_ADJUSTMENT/*distance between two points sharing r and having different angle*/);
                     //Debug.Log(probeRadius);
                     obInst.GetComponent<CalculationProbe>().probeRadius=probeRadius;
                     obInst.GetComponent<CalculationProbe>().substances=substanceArray;
@@ -143,6 +173,7 @@ public class Setup : MonoBehaviour
 
     public void LoadSubstances()
     {
+        substanceArray = new List<ParticleType>();
         var i=0;
         Debug.Log(particleType);
         foreach(string item in particleType)
@@ -218,5 +249,22 @@ public class Setup : MonoBehaviour
         var y = UnityEngine.Random.Range(-0.95f,0.95f)+3.2f;
         var z = 0.16f-x*x-7.53f;
         return new Vector3(x,y,z);
+    }
+
+    private void LoadUI()
+    {
+        var particleList = jsonSerializer.FromJson();
+        var particleNameList = new List<string>();
+        foreach(var item in particleList)
+        {
+            particleNameList.Add(item.type);
+        }
+        var dropdownScript = GameObject.Find("Dropdown A").GetComponent<DropdownHandler>();
+        dropdownScript.thisOptions = particleNameList;
+        dropdownScript.Initialize();
+
+        dropdownScript = GameObject.Find("Dropdown B").GetComponent<DropdownHandler>();
+        dropdownScript.thisOptions = particleNameList;
+        dropdownScript.Initialize();
     }
 }

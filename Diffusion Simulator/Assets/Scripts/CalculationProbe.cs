@@ -42,6 +42,12 @@ public class CalculationProbe : MonoBehaviour
         StartCoroutine(Compute());
     }
 
+    public void ReInitialize()
+    {
+        temperature = GameObject.FindWithTag("Setup").GetComponent<Setup>().temperature;
+        SetupForces();
+    }
+
     private void SetupForces()
     {
         colliderScriptListSortedForSubstances = new List<List<StandardBehaviour>>();
@@ -157,7 +163,7 @@ public class CalculationProbe : MonoBehaviour
     /// UPDATING SCRIPT
     IEnumerator Compute()
     {
-        var timeDelay = new WaitForSeconds(0.2f); //0.2f
+        var timeDelay = new WaitForSeconds(0.25f); //0.2f
 
         while (true)
         {

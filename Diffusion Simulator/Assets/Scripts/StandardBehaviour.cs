@@ -274,7 +274,7 @@ public class StandardBehaviour : MonoBehaviour
     IEnumerator GasMechanicsCheck() //it's only called for gasses, so no need to check for it inside
     {
         var timeDelay = new WaitForSeconds(1f);
-        Debug.Log("I am gas");
+        //Debug.Log("I am gas");
 
         while (true)
         {
@@ -290,7 +290,7 @@ public class StandardBehaviour : MonoBehaviour
     IEnumerator LiquidMechanicsCheck() //it's only called for liquids, so no need to check for it inside
     {
         var timeDelay = new WaitForSeconds(1f);
-        Debug.Log("I am Liquid");
+        //Debug.Log("I am Liquid");
 
         while(true)
         {
