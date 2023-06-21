@@ -25,14 +25,14 @@ public class CameraMovement : MonoBehaviour
     {
         if(Input.GetKey("d"))
         {
-            RotationRadius = ExtendedMath.RotateVector2(RotationRadius,0.01f,RotationRadius.y); //radians
+            RotationRadius = ExtendedMath.RotateVector2(RotationRadius,0.015f,RotationRadius.y); //radians
             this.transform.position = RotationCenter.transform.position+RotationRadius;
             this.transform.LookAt(RotationCenter.transform);
             this.transform.rotation = Quaternion.Euler(cameraAngle,this.transform.rotation.eulerAngles.y,this.transform.rotation.eulerAngles.z); //I fucking hate quaternions
         }
         if(Input.GetKey("a"))
         {
-            RotationRadius = ExtendedMath.RotateVector2(RotationRadius,-0.01f,RotationRadius.y);
+            RotationRadius = ExtendedMath.RotateVector2(RotationRadius,-0.015f,RotationRadius.y);
             this.transform.position = RotationCenter.transform.position+RotationRadius;
             this.transform.LookAt(RotationCenter.transform);
             this.transform.rotation = Quaternion.Euler(cameraAngle,this.transform.rotation.eulerAngles.y,this.transform.rotation.eulerAngles.z);

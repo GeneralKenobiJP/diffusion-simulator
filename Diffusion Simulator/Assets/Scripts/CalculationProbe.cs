@@ -163,7 +163,7 @@ public class CalculationProbe : MonoBehaviour
     /// UPDATING SCRIPT
     IEnumerator Compute()
     {
-        var timeDelay = new WaitForSeconds(0.2f); //0.2f
+        var timeDelay = new WaitForSeconds(0.25f); //0.2f
 
         while (true)
         {
